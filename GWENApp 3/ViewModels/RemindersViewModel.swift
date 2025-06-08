@@ -27,6 +27,7 @@ class RemindersViewModel: ObservableObject {
     @Published var searchQuery: String = ""
     @Published var showLocationPicker: Bool = false
     @Published var selectedMapItem: MKMapItem?
+    @Published var addReminderSuccess: Bool = false // For UI to react to successful save
 
     private let networkingService: NetworkingServiceProtocol
     private let locationService: LocationServiceProtocol
@@ -124,9 +125,11 @@ class RemindersViewModel: ObservableObject {
                     self.newReminderCoordinates = nil
                     self.selectedMapItem = nil
                     self.isLoading = false
+                    self.addReminderSuccess = true // Signal success to UI
                 }
             } catch {
                 DispatchQueue.main.async {
+                    self.addReminderSuccess = false // Ensure it's false on error
                     self.isLoading = false
                     self.errorMessage = "Failed to add reminder: \(error.localizedDescription)"
                     print("Error adding reminder: \(error)")
@@ -218,13 +221,14 @@ class RemindersViewModel: ObservableObject {
         self.showLocationPicker = false
     }
     
-    func selectLocation(_ coordinate: CLLocationCoordinate2D) {
+    func selectLocation(_ coordinate: CLLocationCoordinate2D, placeName: String? = nil) {
         self.newReminderCoordinates = coordinate
-        // If no place name is set yet, use a generic name based on coordinates
-        if self.newReminderPlace.isEmpty {
+        if let name = placeName, !name.isEmpty {
+            self.newReminderPlace = name
+        } else if self.newReminderPlace.isEmpty { // Fallback if no name provided and current place is empty
             self.newReminderPlace = "Location (\(String(format: "%.4f", coordinate.latitude)), \(String(format: "%.4f", coordinate.longitude)))"
         }
-        self.showLocationPicker = false
+        // self.showLocationPicker = false // Picker dismissal is handled by the view itself
     }
     
     func requestLocationAccessIfNeeded() {

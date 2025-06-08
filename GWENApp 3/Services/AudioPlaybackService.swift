@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import AVFoundation
 
-class AudioPlaybackService: ObservableObject {
+class AudioPlaybackService: ObservableObject, AudioPlaybackServiceProtocol { // Added AudioPlaybackServiceProtocol
     static let shared = AudioPlaybackService()
     
     private var player: AVAudioPlayer?

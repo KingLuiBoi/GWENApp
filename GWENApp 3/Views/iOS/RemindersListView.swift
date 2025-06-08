@@ -44,6 +44,7 @@ struct RemindersListView: View {
                         ForEach(viewModel.reminders) { reminder in
                             ReminderRow(reminder: reminder)
                         }
+                        .onDelete(perform: viewModel.deleteReminder) // Added swipe to delete
                     }
                 }
             }
@@ -123,59 +124,42 @@ struct ReminderRow: View {
 struct AddReminderView: View {
     @EnvironmentObject var viewModel: RemindersViewModel
     @Environment(\.dismiss) var dismiss
-    
-    // For map interaction if we add it
-    @State private var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.334_900, longitude: -122.009_020), // Default to Apple Park
-        span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
-    )
-    @State private var selectedCoordinates: CLLocationCoordinate2D? = nil
+    @State private var showingLocationPicker = false // To toggle the map picker sheet
 
     var body: some View {
         NavigationView {
             Form {
                 Section(header: Text("New Location Reminder")) {
                     TextField("Note (e.g., Buy milk)", text: $viewModel.newReminderNote)
-                    TextField("Place Name (e.g., Grocery Store)", text: $viewModel.newReminderPlace)
                     
-                    // Simple Coordinate Input (can be enhanced with a map view)
-                    VStack(alignment: .leading) {
-                        Text("Location Coordinates:")
+                    HStack {
+                        TextField("Place Name (e.g., Grocery Store)", text: $viewModel.newReminderPlace)
+                        Button {
+                            viewModel.mapSearchResults = [] // Clear previous search results before showing picker
+                            showingLocationPicker = true
+                        } label: {
+                            Image(systemName: "map.fill")
+                        }
+                        .disabled(viewModel.locationService.authorizationStatus == .denied)
+                    }
+
+                    if let coords = viewModel.newReminderCoordinates {
+                        Text("Selected: Lat \(String(format: "%.4f", coords.latitude)), Lon \(String(format: "%.4f", coords.longitude))")
                             .font(.caption)
-                        if let coords = viewModel.newReminderCoordinates {
-                            Text("Lat: \(coords.latitude), Lon: \(coords.longitude)")
-                        } else {
-                            Text("Tap on map or enter manually (coming soon)")
-                                .foregroundColor(.gray)
+                        if !viewModel.newReminderPlace.isEmpty {
+                             Text("Place: \(viewModel.newReminderPlace)")
+                                .font(.caption)
                         }
-                        // Basic Map for selection - can be made more interactive
-                        Map(coordinateRegion: $region, interactionModes: .all, showsUserLocation: true, annotationItems: [IdentifiableCoordinate(coord: selectedCoordinates)]) {
-                            item in MapMarker(coordinate: item.coord, tint: .blue)
-                        }
-                        .frame(height: 200)
-                        .onTapGesture(perform: {
-                            // This tap gesture on the map itself is not ideal for precise point selection.
-                            // A better approach would be a draggable pin or a search bar for places.
-                            // For now, let_s use the map_s center as the selected point if user interacts.
-                            // This is a placeholder for better map interaction.
-                        })
-                        .overlay(alignment: .center) {
-                             Image(systemName: "plus.circle.fill") // Center marker
-                                 .foregroundColor(.red)
-                                 .opacity(0.5)
-                                 .allowsHitTesting(false)
-                        }
-                        Button("Set Location to Map Center") {
-                            viewModel.newReminderCoordinates = region.center
-                            selectedCoordinates = region.center
-                        }
-                        .padding(.top, 5)
+                    } else {
+                        Text("No location selected. Tap the map icon to choose.")
+                            .font(.caption)
+                            .foregroundColor(.gray)
                     }
                 }
 
                 Section {
                     Button(action: {
-                        viewModel.addReminder()
+                        viewModel.addReminder() // ViewModel should handle success and error, then UI updates
                     }) {
                         HStack {
                             Spacer()
@@ -205,27 +189,115 @@ struct AddReminderView: View {
                     }
                 }
             }
-            .onAppear { viewModel.errorMessage = nil }
-            .onChange(of: viewModel.reminders.count) { _, _ in
-                if !viewModel.isLoading {
+            .onAppear {
+                viewModel.errorMessage = nil // Clear previous errors
+                viewModel.addReminderSuccess = false // Reset success flag
+            }
+            .onChange(of: viewModel.addReminderSuccess) { newValue in // Changed from oldValue, newValue to just newValue for clarity
+                if newValue { // If addReminder was successful
                     dismiss()
+                    viewModel.addReminderSuccess = false // Reset the flag
                 }
+            }
+            .sheet(isPresented: $showingLocationPicker) {
+                LocationPickerView()
+                    .environmentObject(viewModel) // Pass the ViewModel
             }
         }
     }
 }
 
-// Helper for map annotations
-struct IdentifiableCoordinate: Identifiable {
-    let id = UUID()
-    var coord: CLLocationCoordinate2D
-    init?(coord: CLLocationCoordinate2D?) {
-        guard let coord = coord else { return nil }
-        self.coord = coord
-    }
-}
+// IdentifiableCoordinate struct removed as it's no longer used by the current map implementation.
+// MKMapItem is made Identifiable via an extension in PlacesSearchView.swift for map annotations.
 
 #Preview {
     RemindersListView()
 }
 
+
+// MARK: - LocationPickerView (New View)
+
+struct LocationPickerView: View {
+    @EnvironmentObject var viewModel: RemindersViewModel
+    @Environment(\.dismiss) var dismiss
+
+    // No need for @State region if viewModel.region is used directly.
+    @State private var localSearchQuery: String = "" // Keep localSearchQuery for TextField binding
+
+    var body: some View {
+        NavigationView {
+            VStack {
+                // Search bar for locations
+                HStack {
+                    TextField("Search for a place", text: $localSearchQuery, onCommit: {
+                        viewModel.searchQuery = localSearchQuery // Update viewModel's query
+                        viewModel.searchLocations() // Use existing VM method
+                    })
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    Button {
+                        viewModel.searchQuery = localSearchQuery
+                        viewModel.searchLocations()
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                    }
+                }
+                .padding()
+
+                // Map view
+                ZStack(alignment: .bottom) {
+                    // Use viewModel.region, viewModel.searchResults
+                    Map(coordinateRegion: $viewModel.region, showsUserLocation: true, annotationItems: viewModel.searchResults) { item in
+                        MapAnnotation(coordinate: item.placemark.coordinate) {
+                            VStack { // Added VStack for better annotation appearance
+                                Image(systemName: "mappin.circle.fill")
+                                    .foregroundColor(.red)
+                                Text(item.name ?? "")
+                                    .font(.caption)
+                                    .fixedSize(horizontal: true, vertical: false) // Prevent text from causing excessive height
+                            }
+                            .onTapGesture {
+                                viewModel.selectMapItem(item) // Use existing VM method
+                                dismiss() // Dismiss after selection
+                            }
+                        }
+                    }
+                    // onTapGesture for direct map tap is complex; "Confirm Map Center" is a good alternative.
+
+                    if viewModel.isLoading { // Use viewModel.isLoading
+                        ProgressView("Searching...")
+                            .padding()
+                            .background(Color.secondary.opacity(0.5)) // Updated background for better visibility
+                            .cornerRadius(10)
+                    }
+
+                    Button("Confirm Map Center") {
+                        let centerCoordinate = viewModel.region.center
+                        // Reverse geocode to get a place name
+                        let geocoder = CLGeocoder()
+                        geocoder.reverseGeocodeLocation(CLLocation(latitude: centerCoordinate.latitude, longitude: centerCoordinate.longitude)) { placemarks, error in
+                            let name = placemarks?.first?.name ?? placemarks?.first?.locality ?? "Selected Location"
+                            viewModel.selectLocation(centerCoordinate, placeName: name) // Use updated VM method
+                            dismiss()
+                        }
+                    }
+                    .padding()
+                    .buttonStyle(.borderedProminent) // Modern button style
+                    .padding(.bottom, 30)
+                }
+            }
+            .navigationTitle("Select Location")
+            .toolbar { // Use .toolbar for modern NavigationBarItems
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+            .onAppear {
+                 // ViewModel's region should be up-to-date via its own location service subscription.
+                 // Clear previous search results and query.
+                 viewModel.searchResults = []
+                 viewModel.searchQuery = "" // Clear search query on appear
+                 localSearchQuery = ""   // Clear local search query too
+            }
+        }
+    }
+}

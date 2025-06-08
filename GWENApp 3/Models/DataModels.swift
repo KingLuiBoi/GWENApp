@@ -77,6 +77,33 @@ struct Place: Codable, Identifiable {
     }
 }
 
+// This model is used by PlacesViewModel and MapKitService
+// It can be a simplified version of Place or tailored to what MKMapItem provides easily
+struct PlaceSearchResult: Identifiable {
+    let id: String // Can be UUID().uuidString from MKMapItem or place_id from backend
+    let name: String
+    let address: String? // From placemark.title or similar
+    let lat: String? // Or Double, but MapKitService implementation used String
+    let lon: String? // Or Double
+
+    // Optional: Add other fields that are easy to get from MKMapItem or backend Place
+    // let category: String?
+    // let phoneNumber: String?
+    // let url: String?
+    // let rating: Double?
+    // let types: [String]?
+
+    // Convenience to get CLLocationCoordinate2D
+    var coordinate: CLLocationCoordinate2D? {
+        guard let latStr = lat, let lonStr = lon,
+              let latDouble = Double(latStr), let lonDouble = Double(lonStr) else {
+            return nil
+        }
+        return CLLocationCoordinate2D(latitude: latDouble, longitude: lonDouble)
+    }
+}
+
+
 struct PlaceDetail: Codable {
     let name: String
     let address: String

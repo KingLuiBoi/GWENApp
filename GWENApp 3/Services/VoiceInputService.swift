@@ -3,7 +3,7 @@ import Combine
 import AVFoundation
 import Speech
 
-class VoiceInputService: NSObject, ObservableObject {
+class VoiceInputService: NSObject, ObservableObject, VoiceInputServiceProtocol { // Added VoiceInputServiceProtocol
     static let shared = VoiceInputService()
     
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))
@@ -16,6 +16,11 @@ class VoiceInputService: NSObject, ObservableObject {
     @Published var isListeningForWakeWord = false
     @Published var wakeWordDetected = false
     
+    // Computed property to satisfy VoiceInputServiceProtocol for synchronous check
+    var isListeningForWakeWordValue: Bool {
+        return isListeningForWakeWord // Directly return the current value of the @Published property
+    }
+
     private var cancellables = Set<AnyCancellable>()
     
     override private init() {

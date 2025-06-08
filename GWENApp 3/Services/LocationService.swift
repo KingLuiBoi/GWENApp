@@ -2,7 +2,7 @@ import Foundation
 import CoreLocation
 import Combine
 
-class LocationService: NSObject, ObservableObject {
+class LocationService: NSObject, ObservableObject, LocationServiceProtocol { // Added LocationServiceProtocol
     static let shared = LocationService()
     
     private let locationManager = CLLocationManager()
@@ -24,7 +24,11 @@ class LocationService: NSObject, ObservableObject {
         authorizationStatus = locationManager.authorizationStatus
     }
     
-    func requestPermission() {
+    // requestPermission() is called by requestLocationPermissions() from protocol extension if names differ
+    // Or, rename this to requestLocationPermissions() to match protocol directly.
+    // For now, assuming protocol extension handles it, or we rename.
+    // Let's make it direct for clarity:
+    func requestLocationPermissions() { // Renamed from requestPermission
         locationManager.requestWhenInUseAuthorization()
     }
     

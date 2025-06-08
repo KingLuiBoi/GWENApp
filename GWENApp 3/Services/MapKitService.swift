@@ -2,7 +2,7 @@ import Foundation
 import MapKit
 import Combine
 
-class MapKitService: ObservableObject {
+class MapKitService: ObservableObject, MapKitServiceProtocol { // Added MapKitServiceProtocol
     static let shared = MapKitService()
     
     @Published var searchResults: [MKMapItem] = []
@@ -70,13 +70,49 @@ class MapKitService: ObservableObject {
         item.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving])
     }
     
-    func convertPlaceToMapItem(place: Place) -> MKMapItem {
+    // This method was in the original service. The protocol might need adjustment if it's different.
+    // The protocol asks for convertPlaceSearchResultToMapItem and convertMapItemToPlaceSearchResult.
+    // Let's ensure those are present and public.
+
+    // Assuming Place and PlaceSearchResult are defined in DataModels.swift
+    // and PlaceSearchResult has necessary fields.
+    public func convertMapItemToPlaceSearchResult(mapItem: MKMapItem) -> PlaceSearchResult {
+        // This is a sample implementation. Actual fields depend on PlaceSearchResult definition.
+        let placemark = mapItem.placemark
+        return PlaceSearchResult(
+            id: mapItem.id.uuidString, // MKMapItem is Identifiable from PlacesSearchView
+            name: mapItem.name ?? "Unknown Place",
+            address: placemark.title, // MKPlacemark's title often has a good address string
+            lat: String(placemark.coordinate.latitude), // Assuming lat/lon are strings in PlaceSearchResult
+            lon: String(placemark.coordinate.longitude)
+            // category: mapItem.pointOfInterestCategory?.rawValue,
+            // phoneNumber: mapItem.phoneNumber,
+            // url: mapItem.url?.absoluteString,
+            // rating: nil, // MKMapItem doesn't directly provide rating usually
+            // types: nil   // MKMapItem doesn't directly provide types array like Google Places
+        )
+    }
+
+    public func convertPlaceSearchResultToMapItem(place: PlaceSearchResult) -> MKMapItem? {
+        guard let lat = Double(place.lat ?? ""), let lon = Double(place.lon ?? "") else {
+            return nil
+        }
+        let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lon)
+        let placemark = MKPlacemark(coordinate: coordinate)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = place.name
+        // Other properties from PlaceSearchResult could be set here if MKMapItem supports them
+        return mapItem
+    }
+    
+    // Original convertPlaceToMapItem - not in protocol, but useful. Can be kept as internal helper.
+    internal func convertPlaceToMapItem(place: Place) -> MKMapItem {
         let placemark = MKPlacemark(coordinate: place.coordinate)
         let mapItem = MKMapItem(placemark: placemark)
         mapItem.name = place.name
         return mapItem
     }
-    
+
     func geocodeAddress(_ address: String) -> AnyPublisher<CLLocationCoordinate2D, Error> {
         return Future<CLLocationCoordinate2D, Error> { promise in
             let geocoder = CLGeocoder()

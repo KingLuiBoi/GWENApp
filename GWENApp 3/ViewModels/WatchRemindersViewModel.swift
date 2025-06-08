@@ -1,48 +1,43 @@
-//
-//  WatchRemindersViewModel.swift
-//  GWENAppWatchOS
-//
-//  Created by Manus on 5/14/25.
-//
-
 import Foundation
 import Combine
-import CoreLocation
+import CoreLocation // For CLLocationCoordinate2D
 
-// Reusing the iOS RemindersViewModel for WatchOS for now.
-// If significant differences in logic or data presentation are needed,
-// a dedicated WatchRemindersViewModel could be created.
-// For simplicity, we assume the existing one is mostly compatible for data operations,
-// though the UI will be significantly streamlined.
+// Assuming NetworkingServiceProtocol and LocationServiceProtocol are defined and accessible.
+// VoiceInputServiceProtocol for potential voice-based reminder creation.
 
-// No new ViewModel needed if RemindersViewModel is suitable.
-// A Watch-specific one might focus more on displaying triggered reminders
-// and quick actions rather than complex creation UIs.
-/*
+@MainActor
 class WatchRemindersViewModel: ObservableObject {
-    @Published var activeReminders: [LocationReminder] = [] // Show a few active ones
+    @Published var reminders: [LocationReminder] = []
     @Published var triggeredReminders: [LocationReminder] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
 
+    // For creating a simple reminder (e.g., "remind me here: [note]")
+    @Published var newReminderNote: String = ""
+    @Published var addReminderSuccess: Bool = false
+
     private let networkingService: NetworkingServiceProtocol
-    private let locationService: LocationServiceProtocol
+    let locationService: LocationServiceProtocol // Made public for potential direct use in View for permissions
+    // Optional: VoiceInputService for adding reminders by voice
+    // private let voiceInputService: VoiceInputServiceProtocol
+
     private var cancellables = Set<AnyCancellable>()
 
     init(
         networkingService: NetworkingServiceProtocol = NetworkingService.shared,
         locationService: LocationServiceProtocol = LocationService.shared
+        // voiceInputService: VoiceInputServiceProtocol = VoiceInputService.shared
     ) {
         self.networkingService = networkingService
         self.locationService = locationService
+        // self.voiceInputService = voiceInputService
+
         subscribeToLocationUpdates()
-        // fetchActiveReminders() // Fetch on init or let view trigger
     }
 
     private func subscribeToLocationUpdates() {
         locationService.currentLocation
             .compactMap { $0 }
-            .debounce(for: .seconds(20), scheduler: DispatchQueue.main) // Less frequent for watch?
             .sink { [weak self] coordinates in
                 self?.checkLocationForTriggers(coordinates: coordinates)
             }
@@ -50,58 +45,120 @@ class WatchRemindersViewModel: ObservableObject {
             
         locationService.authorizationStatus
             .sink { [weak self] status in
+                guard let self = self else { return }
                 if status == .authorizedWhenInUse || status == .authorizedAlways {
-                    self?.locationService.startUpdatingLocation()
+                    self.locationService.startUpdatingLocation()
                 } else {
-                    self?.locationService.stopUpdatingLocation()
+                    // Handle case where permissions are not granted or revoked on watch
+                    self.locationService.stopUpdatingLocation()
+                    // self.errorMessage = "Location permission needed." // Potentially
                 }
             }
             .store(in: &cancellables)
     }
 
-    func fetchActiveReminders() {
+    func fetchReminders() {
+        guard reminders.isEmpty else { // Only fetch if reminders list is empty
+            print("Reminders already loaded.")
+            return
+        }
         isLoading = true
         errorMessage = nil
         Task {
             do {
                 let fetchedReminders = try await networkingService.fetchLocationReminders()
-                DispatchQueue.main.async {
-                    // Show only a few, or those most relevant
-                    self.activeReminders = Array(fetchedReminders.sorted(by: { $0.timestamp > $1.timestamp }).prefix(3))
-                    self.isLoading = false
-                }
+                self.reminders = fetchedReminders.sorted(by: { $0.created_at > $1.created_at }) // Show newest first
             } catch {
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.errorMessage = "Failed: \(error.localizedDescription)".prefix(50).description
+                self.errorMessage = "Error: \(error.localizedDescription.prefix(100))"
+                print("Error fetching reminders: \(error)")
+            }
+            self.isLoading = false
+        }
+    }
+
+    // Simplified add reminder: uses current location and a note (e.g., from voice input)
+    func addReminderHere(note: String) {
+        guard !note.isEmpty else {
+            errorMessage = "Note is empty."
+            return
+        }
+        guard let currentLocation = locationService.currentLocation.value else {
+            errorMessage = "Location unknown."
+            // Try to request location update if status allows
+            if locationService.authorizationStatus.value == .authorizedWhenInUse || locationService.authorizationStatus.value == .authorizedAlways {
+                 locationService.startUpdatingLocation()
+            } else {
+                // This should ideally trigger the system permission prompt if not determined,
+                // or guide user if denied. For watch, direct prompting might be limited.
+                locationService.requestLocationPermissions()
+            }
+            return
+        }
+
+        isLoading = true
+        errorMessage = nil
+        addReminderSuccess = false
+
+        let placeName = "Near Current Location"
+
+        Task {
+            do {
+                let newReminder = try await networkingService.createLocationReminder(
+                    place: placeName,
+                    lat: currentLocation.latitude,
+                    lon: currentLocation.longitude,
+                    note: note
+                )
+                self.reminders.insert(newReminder, at: 0)
+                self.reminders.sort(by: { $0.created_at > $1.created_at })
+                self.newReminderNote = ""
+                self.addReminderSuccess = true
+            } catch {
+                self.errorMessage = "Save failed: \(error.localizedDescription.prefix(50))"
+                print("Error adding reminder: \(error)")
+                self.addReminderSuccess = false
+            }
+            self.isLoading = false
+        }
+    }
+
+    func deleteReminder(at offsets: IndexSet) {
+        let remindersToDelete = offsets.map { reminders[$0] }
+        reminders.remove(atOffsets: offsets)
+
+        Task {
+            for reminder in remindersToDelete {
+                do {
+                    try await networkingService.deleteLocationReminder(reminderID: reminder.id)
+                } catch {
+                    print("Error deleting reminder \(reminder.id) from backend: \(error.localizedDescription)")
                 }
             }
         }
     }
 
-    func checkLocationForTriggers(coordinates: CLLocationCoordinate2D) {
+    private func checkLocationForTriggers(coordinates: CLLocationCoordinate2D) {
+        print("Watch: Checking for location triggers at lat: \(coordinates.latitude), lon: \(coordinates.longitude)")
         Task {
             do {
                 let triggered = try await networkingService.updateUserLocation(lat: coordinates.latitude, lon: coordinates.longitude)
-                DispatchQueue.main.async {
+                if !triggered.isEmpty {
                     self.triggeredReminders = triggered
-                    if !triggered.isEmpty {
-                        // Handle triggered reminders - e.g., show a notification
-                        print("Watch: Triggered reminders: \(triggered.map { $0.note })")
-                        // Potentially send a local notification on the watch
-                    }
+                    print("Watch: Triggered reminders: \(triggered.map { $0.reminder })")
+                    // WKInterfaceDevice.current().play(.notification) // Example haptic
+                } else {
+                    self.triggeredReminders = []
                 }
             } catch {
-                DispatchQueue.main.async {
-                    print("Watch: Error checking location triggers: \(error.localizedDescription)")
-                }
+                print("Watch: Error checking location triggers: \(error.localizedDescription)")
             }
         }
     }
     
-    func requestLocationIfNeeded() {
+    func requestLocationAccessIfNeeded() {
         locationService.requestLocationPermissions()
+        if locationService.authorizationStatus.value == .authorizedWhenInUse || locationService.authorizationStatus.value == .authorizedAlways {
+            locationService.startUpdatingLocation()
+        }
     }
 }
-*/
-

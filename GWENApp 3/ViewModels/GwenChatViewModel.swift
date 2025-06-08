@@ -52,49 +52,67 @@ class GwenChatViewModel: ObservableObject {
     }
 
     private func subscribeToVoiceInput() {
-        voiceInputService.transcribedText
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] transcribedText in
-                guard let self = self else { return }
-                if self.isListeningForHeyGwen && transcribedText.lowercased().contains("hey gwen") {
-                    print("ViewModel: Hey GWEN detected by service.")
-                    self.voiceInputService.stopHeyGwenDetection()
-                    self.isListeningForHeyGwen = false
-                    // Automatically start active listening for the command
-                    self.startActiveListening()
-                } else if self.isActivelyListening {
-                    self.currentInput = transcribedText // Update input field with ongoing transcription
-                    // User might stop speaking, then we send. Or a send button.
-                    // For now, let's assume a manual send action after transcription populates currentInput.
-                }
-            }
-            .store(in: &cancellables)
-
-        voiceInputService.isListening
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] listeningState in
-                self?.isActivelyListening = listeningState
-                if !listeningState && !self!.currentInput.isEmpty && self!.isThinking == false { // Auto-send if listening stops and there's input
-                    // This auto-send logic might need refinement based on UX.
-                    // self.sendCurrentPrompt()
-                }
-            }
-            .store(in: &cancellables)
-            
-        voiceInputService.isHeyGwenListening
+        // Update isListeningForHeyGwen based on the service's state
+        voiceInputService.isListeningForWakeWord
             .receive(on: DispatchQueue.main)
             .assign(to: \.isListeningForHeyGwen, on: self)
             .store(in: &cancellables)
 
-        voiceInputService.errorOccurred
+        // Handle wake word detection
+        voiceInputService.wakeWordDetected
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] error in
-                self?.errorMessage = "Voice input error: \(error.localizedDescription)"
-                self?.isThinking = false
-                self?.isListeningForHeyGwen = false
-                self?.isActivelyListening = false
+            .sink { [weak self] detected in
+                guard let self = self, detected else { return }
+                print("ViewModel: Wake word detected by service!")
+                // Service itself handles stopping wake word listening and starting command recording.
+                // ViewModel needs to update its state to reflect that it's now actively listening for a command.
+                self.isActivelyListening = true
+                self.currentInput = "" // Ensure input is clear for the new command
+                // Potentially provide haptic/audio feedback here if needed
             }
             .store(in: &cancellables)
+
+        // Update transcribedText from the service
+        voiceInputService.transcribedText
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] text in
+                guard let self = self else { return }
+                // Only update currentInput if we are in active listening mode (post-wake word or manual)
+                // and not in wake word detection mode.
+                if self.isActivelyListening && !self.isListeningForHeyGwen {
+                    self.currentInput = text
+                }
+            }
+            .store(in: &cancellables)
+
+        // Update isActivelyListening based on the service's recording state
+        // This replaces the old `voiceInputService.isListening`
+        voiceInputService.isRecording
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isRecording in
+                guard let self = self else { return }
+
+                // If recording stops, and we were actively listening (not for wake word),
+                // and there's text, consider it the end of a command.
+                if !isRecording && self.isActivelyListening && !self.isListeningForHeyGwen {
+                    self.isActivelyListening = false // Update our state
+                    if !self.currentInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        print("ViewModel: Recording stopped, sending prompt.")
+                        self.sendCurrentPrompt()
+                    }
+                } else if isRecording && !self.isListeningForHeyGwen {
+                    // If service starts recording and we are not in wake word mode, it means active listening for command.
+                    self.isActivelyListening = true
+                } else if !isRecording {
+                    // If service just stops recording for any other reason (e.g. wake word listening stopped without detection)
+                    self.isActivelyListening = false
+                }
+            }
+            .store(in: &cancellables)
+
+        // Note: The VoiceInputService currently doesn't have a general `errorOccurred` publisher.
+        // Error handling is done via console prints in the service.
+        // If specific errors need UI updates, that publisher should be added to the protocol and service.
     }
     
     private func subscribeToAudioPlayback() {
@@ -118,35 +136,46 @@ class GwenChatViewModel: ObservableObject {
         }
     }
     
+    func startHeyGwenIfNeeded() { // New method for onAppear logic
+        if !isListeningForHeyGwen && hasPermissions {
+            voiceInputService.startListeningForWakeWord()
+        } else if !hasPermissions {
+            requestVoicePermissions()
+        }
+    }
+
     func toggleHeyGwenListening() {
-        if isListeningForHeyGwen {
-            voiceInputService.stopHeyGwenDetection()
+        if voiceInputService.isListeningForWakeWordValue { // Accessing underlying value for immediate check
+            voiceInputService.stopListeningForWakeWord()
         } else {
-            guard hasPermissions else { 
+            guard hasPermissions else {
                 errorMessage = "Please grant speech and microphone permissions first."
                 requestVoicePermissions()
                 return
             }
-            voiceInputService.startHeyGwenDetection()
+            currentInput = "" // Clear any previous input
+            voiceInputService.startListeningForWakeWord()
         }
     }
     
-    func startActiveListening() {
-        guard hasPermissions else { 
+    func startActiveListening() { // Manual tap to listen for command
+        guard hasPermissions else {
             errorMessage = "Please grant speech and microphone permissions first."
             requestVoicePermissions()
             return
         }
+        if isListeningForHeyGwen { // If "Hey GWEN" was on, turn it off
+            voiceInputService.stopListeningForWakeWord()
+        }
         currentInput = "" // Clear previous input
-        voiceInputService.startTranscribing()
+        isActivelyListening = true // Set our state
+        voiceInputService.startRecording(forWakeWordDetection: false) // Start general recording
     }
     
-    func stopActiveListening() {
-        voiceInputService.stopTranscribing()
-        // If there's content in currentInput, user might expect it to be sent
-        if !currentInput.isEmpty {
-            // sendCurrentPrompt() // Or require explicit send button tap
-        }
+    func stopActiveListening() { // Manual tap to stop listening
+        voiceInputService.stopRecording() // Stop general recording
+        isActivelyListening = false // Update our state
+        // The isRecording publisher will handle sending the prompt if text exists.
     }
 
     func sendCurrentPrompt() {

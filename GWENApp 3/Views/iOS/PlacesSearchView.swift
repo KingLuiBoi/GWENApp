@@ -42,30 +42,32 @@ struct PlacesSearchView: View {
                 
                 // Map View
                 ZStack {
-                    Map(coordinateRegion: $viewModel.region, 
+                    Map(coordinateRegion: $viewModel.region,
                         showsUserLocation: true,
                         userTrackingMode: .constant(.none),
-                        annotationItems: viewModel.searchResults) { place in
-                        MapAnnotation(coordinate: CLLocationCoordinate2D(
-                            latitude: Double(place.lat) ?? 0,
-                            longitude: Double(place.lon) ?? 0)) {
-                                VStack {
-                                    Image(systemName: "mappin.circle.fill")
-                                        .foregroundColor(.red)
-                                        .font(.title)
-                                    Text(place.name)
-                                        .font(.caption)
-                                        .background(Color.white.opacity(0.7))
-                                        .cornerRadius(4)
-                                }
-                                .onTapGesture {
-                                    if let index = viewModel.searchResults.firstIndex(where: { $0.id == place.id }),
-                                       index < viewModel.mapItems.count {
-                                        viewModel.selectMapItem(viewModel.mapItems[index])
-                                    }
-                                }
+                        annotationItems: viewModel.mapItems) { mapItem in
+                        MapAnnotation(coordinate: mapItem.placemark.coordinate) {
+                            VStack {
+                                Image(systemName: "mappin.circle.fill")
+                                    .foregroundColor(viewModel.selectedMapItem?.id == mapItem.id ? .blue : .red) // Highlight selected
+                                    .font(.title)
+                                Text(mapItem.name ?? "Place")
+                                    .font(.caption)
+                                    .background(Color.white.opacity(0.7))
+                                    .cornerRadius(4)
+                            }
+                            .onTapGesture {
+                                viewModel.selectMapItem(mapItem)
+                            }
                         }
                     }
+                    .overlay(
+                        Group {
+                            if let route = viewModel.route {
+                                MapPolylineView(route: route)
+                            }
+                        }
+                    )
                     .mapType(mapType)
                     .edgesIgnoringSafeArea(.bottom)
                     
@@ -108,16 +110,13 @@ struct PlacesSearchView: View {
                 } else if viewModel.selectedMapItem != nil {
                     // Selected place details
                     PlaceDetailView(viewModel: viewModel)
-                } else if !viewModel.searchResults.isEmpty {
+                } else if !viewModel.mapItems.isEmpty { // Changed from searchResults to mapItems for consistency
                     // List of search results
                     List {
-                        ForEach(viewModel.searchResults) { place in
-                            PlaceRow(place: place)
+                        ForEach(viewModel.mapItems) { mapItem in // Changed from searchResults to mapItems
+                            PlaceRow(mapItem: mapItem) // Assuming PlaceRow can take MKMapItem or we adapt it
                                 .onTapGesture {
-                                    if let index = viewModel.searchResults.firstIndex(where: { $0.id == place.id }),
-                                       index < viewModel.mapItems.count {
-                                        viewModel.selectMapItem(viewModel.mapItems[index])
-                                    }
+                                    viewModel.selectMapItem(mapItem)
                                 }
                         }
                     }
@@ -143,10 +142,19 @@ struct PlaceDetailView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             if let selectedItem = viewModel.selectedMapItem {
-                Text(selectedItem.name ?? "Selected Place")
+                Text(selectedItem.name ?? "Selected Place") // MKMapItem's name
                     .font(.headline)
                 
-                if let address = selectedItem.placemark.title {
+                // Attempt to display address more reliably
+                let addressString = [selectedItem.placemark.subThoroughfare, selectedItem.placemark.thoroughfare, selectedItem.placemark.locality, selectedItem.placemark.administrativeArea, selectedItem.placemark.postalCode]
+                    .compactMap { $0 }
+                    .joined(separator: ", ")
+
+                if !addressString.isEmpty {
+                    Text(addressString)
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                } else if let address = selectedItem.placemark.title {
                     Text(address)
                         .font(.subheadline)
                         .foregroundColor(.gray)
@@ -250,15 +258,67 @@ struct DirectionsView: View {
     }
 }
 
+struct MapPolylineView: UIViewRepresentable {
+    let route: MKRoute
+
+    func makeUIView(context: Context) -> MKMapView {
+        let mapView = MKMapView()
+        mapView.delegate = context.coordinator
+        mapView.addOverlay(route.polyline)
+        mapView.setVisibleMapRect(route.polyline.boundingMapRect, edgePadding: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20), animated: false)
+        return mapView
+    }
+
+    func updateUIView(_ uiView: MKMapView, context: Context) {
+        if uiView.overlays.count > 0 {
+            uiView.removeOverlays(uiView.overlays)
+        }
+        uiView.addOverlay(route.polyline)
+        uiView.setVisibleMapRect(route.polyline.boundingMapRect, edgePadding: UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20), animated: true)
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, MKMapViewDelegate {
+        var parent: MapPolylineView
+
+        init(_ parent: MapPolylineView) {
+            self.parent = parent
+        }
+
+        func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+            if let polyline = overlay as? MKPolyline {
+                let renderer = MKPolylineRenderer(polyline: polyline)
+                renderer.strokeColor = .blue
+                renderer.lineWidth = 3
+                return renderer
+            }
+            return MKOverlayRenderer()
+        }
+    }
+}
+
+
 struct PlaceRow: View {
-    let place: PlaceSearchResult
+    let mapItem: MKMapItem // Changed from PlaceSearchResult to MKMapItem
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text(place.name)
+            Text(mapItem.name ?? "Unknown Place")
                 .font(.headline)
-            if let address = place.address, !address.isEmpty {
-                Text(place.address ?? "No address available")
+
+            let addressString = [mapItem.placemark.subThoroughfare, mapItem.placemark.thoroughfare, mapItem.placemark.locality]
+                .compactMap { $0 }
+                .joined(separator: " ")
+
+            if !addressString.isEmpty {
+                Text(addressString)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            } else if let title = mapItem.placemark.title {
+                Text(title)
                     .font(.subheadline)
                     .foregroundColor(.gray)
             }
@@ -266,6 +326,14 @@ struct PlaceRow: View {
         .padding(.vertical, 4)
     }
 }
+
+// Extension to make MKMapItem Identifiable for ForEach
+extension MKMapItem: Identifiable {
+    public var id: UUID {
+        return UUID() // Simple unique ID; consider stability if items are frequently reordered/replaced
+    }
+}
+
 
 #Preview {
     PlacesSearchView()

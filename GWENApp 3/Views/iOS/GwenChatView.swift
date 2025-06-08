@@ -111,10 +111,8 @@ struct GwenChatView: View {
             }
             .onAppear {
                 // Request permissions when the view appears if not already granted
-                // This is a basic approach; a more sophisticated onboarding might be needed.
-                if !viewModel.hasPermissions {
-                    viewModel.requestVoicePermissions()
-                }
+                viewModel.requestVoicePermissions() // Ensures permissions are checked/requested early
+                viewModel.startHeyGwenIfNeeded() // Attempt to start "Hey GWEN" listening
             }
         }
     }

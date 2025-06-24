@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 import SwiftUI // For Color, etc. if used in displayable items
+import Speech
+import AVFoundation
 
 // This ViewModel can be similar to GwenChatViewModel but might be simplified
 // or tailored for WatchOS specific interactions.
@@ -55,48 +57,34 @@ class WatchGwenChatViewModel: ObservableObject {
     }
 
     private func subscribeToVoiceInput() {
-        voiceInputService.transcribedText
+        voiceInputService.transcribedTextPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] transcribedText in
                 guard let self = self else { return }
-                if self.isListeningForHeyGwen && transcribedText.lowercased().contains("hey gwen") {
-                    self.voiceInputService.stopHeyGwenDetection()
+                self.currentInputText = transcribedText
+            }
+            .store(in: &cancellables)
+
+        voiceInputService.isRecordingPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isRecording in
+                guard let self = self else { return }
+                self.isActivelyListening = isRecording
+                if !isRecording && !self.currentInputText.isEmpty && self.isThinking == false {
+                    self.sendPrompt(prompt: self.currentInputText)
+                    self.currentInputText = ""
+                }
+            }
+            .store(in: &cancellables)
+
+        voiceInputService.wakeWordDetectedPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] detected in
+                guard let self = self else { return }
+                if detected {
                     self.isListeningForHeyGwen = false
                     self.startActiveListening(isHeyGwenTriggered: true)
-                } else if self.isActivelyListening {
-                    // For WatchOS, we might send immediately after transcription stops or on a delimiter.
-                    // Or, if text input is also an option, update a field.
-                    self.currentInputText = transcribedText // Keep updating
                 }
-            }
-            .store(in: &cancellables)
-
-        voiceInputService.isListening
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] listeningState in
-                guard let self = self else { return }
-                self.isActivelyListening = listeningState
-                if !listeningState && !self.currentInputText.isEmpty && self.isThinking == false {
-                    // Auto-send when listening stops and there_s transcribed text
-                    // This is more suitable for voice-first interaction on Watch
-                    self.sendPrompt(prompt: self.currentInputText)
-                    self.currentInputText = "" // Clear after sending
-                }
-            }
-            .store(in: &cancellables)
-            
-        voiceInputService.isHeyGwenListening
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.isListeningForHeyGwen, on: self)
-            .store(in: &cancellables)
-
-        voiceInputService.errorOccurred
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] error in
-                self?.errorMessage = "Voice Error: \(error.localizedDescription)".prefix(50) + "..."
-                self?.isThinking = false
-                self?.isListeningForHeyGwen = false
-                self?.isActivelyListening = false
             }
             .store(in: &cancellables)
     }
@@ -120,14 +108,15 @@ class WatchGwenChatViewModel: ObservableObject {
     // "Hey GWEN" might be too battery intensive for watch, consider tap-to-speak as primary
     func toggleHeyGwenListening() {
         if isListeningForHeyGwen {
-            voiceInputService.stopHeyGwenDetection()
+            voiceInputService.stopWakeWordDetection()
         } else {
             guard hasPermissions else { 
                 errorMessage = "Grant permissions first."
                 requestVoicePermissions()
                 return
             }
-            voiceInputService.startHeyGwenDetection()
+            voiceInputService.startWakeWordDetection()
+            isListeningForHeyGwen = true
         }
     }
     
@@ -140,11 +129,11 @@ class WatchGwenChatViewModel: ObservableObject {
         currentInputText = "" // Clear previous input
         lastUserPrompt = isHeyGwenTriggered ? "(Hey GWEN...)" : "(Listening...)"
         lastGwenResponse = nil
-        voiceInputService.startTranscribing()
+        voiceInputService.startListening()
     }
     
     func stopActiveListening() {
-        voiceInputService.stopTranscribing()
+        voiceInputService.stopListening()
         // Prompt will be sent automatically by the sink if currentInputText is not empty
     }
 
@@ -168,23 +157,14 @@ class WatchGwenChatViewModel: ObservableObject {
                     // For WatchOS, we might not get a full transcript back from this endpoint.
                     // We can use the prompt as the user_s part and indicate GWEN is speaking.
                     // If backend could provide a transcript, we_d use it for lastGwenResponse.
-                    self.lastGwenResponse = "(Playing GWENs response)" // Placeholder
-                    self.audioPlaybackService.playAudio(data: audioData)
+                    self.lastGwenResponse = "(Playing GWEN's response)" // Placeholder
+                    try? await self.audioPlaybackService.playAudio(data: audioData)
                 }
             } catch {
                 DispatchQueue.main.async {
                     self.isThinking = false
                     self.lastGwenResponse = "Error" 
-                    if let networkError = error as? NetworkError {
-                        switch networkError {
-                        case .serverError(_, let message):
-                            self.errorMessage = message?.prefix(50).appending("...").description ?? "Server error."
-                        default:
-                            self.errorMessage = "Network: \(error.localizedDescription)".prefix(50).appending("...").description
-                        }
-                    } else {
-                        self.errorMessage = "Failed: \(error.localizedDescription)".prefix(50).appending("...").description
-                    }
+                    self.errorMessage = "Failed: \(error.localizedDescription)"
                 }
             }
         }

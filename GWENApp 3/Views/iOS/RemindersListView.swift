@@ -98,15 +98,15 @@ struct ReminderRow: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
-                Text(reminder.note)
+                Text(reminder.reminder)
                     .font(.headline)
                     .foregroundColor(isTriggered ? .orange : .primary)
-                Text("At: \(reminder.place)")
+                Text("At: \(reminder.place_name)")
                     .font(.subheadline)
-                Text("Set: \(reminder.displayDate)")
+                Text("Set: \(reminder.createdDate, style: .date)")
                     .font(.footnote)
                     .foregroundColor(.gray)
-                Text("Coords: Lat \(String(format: "%.4f", reminder.lat)), Lon \(String(format: "%.4f", reminder.lon))")
+                Text("Coords: Lat \(String(format: "%.4f", reminder.latitude)), Lon \(String(format: "%.4f", reminder.longitude))")
                     .font(.caption2)
                     .foregroundColor(.gray)
             }

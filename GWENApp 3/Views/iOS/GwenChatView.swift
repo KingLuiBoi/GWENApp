@@ -174,3 +174,4 @@ struct ChatBubbleView: View {
     GwenChatView()
 }
 
+

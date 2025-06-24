@@ -1,5 +1,5 @@
 import XCTest
-@testable import GWENApp_3 // Replace with your app module name
+@testable import GWENApplicationXCODE // Replace with your app module name
 
 // NOTE: These tests are very basic due to the difficulty of mocking URLSession directly
 // without a more elaborate setup (e.g., custom URLProtocol).
@@ -22,13 +22,13 @@ class NetworkingServiceTests: XCTestCase {
     }
 
     // MARK: - URL Construction Tests
-
+    
     func testFetchTimeCapsules_URLConstruction() {
         // This test is limited. We can't inspect the URLRequest easily without making
         // URLSession injectable or using a mocking framework.
         // For now, we'll just call the method and expect it not to throw an obvious URL error.
         // A more robust test would involve a URLProtocol mock to capture the request.
-
+        
         // We expect this to likely fail with a requestFailed or unknown error because
         // it's trying to make a real network call to a non-existent/stubbed backend in test environment.
         // The goal here isn't to test the success of the call, but that the method runs.
@@ -62,7 +62,7 @@ class NetworkingServiceTests: XCTestCase {
             // or requestFailed if no server) are expected.
         }
     }
-
+    
     func testSearchPlaces_URLConstructionWithParameters() async {
         let lat = 37.7749
         let lon = -122.4194
@@ -89,7 +89,7 @@ class NetworkingServiceTests: XCTestCase {
         // 2. Make the networkingService use this mock session.
         // 3. Call a method, e.g., networkingService.fetchTimeCapsules()
         // 4. Assert that the error thrown is NetworkError.serverError or NetworkError.invalidResponse
-
+        
         // For now, this is a placeholder for what would be a more advanced test.
         XCTAssertTrue(true, "Conceptual test for error mapping - requires URLSession mocking.")
     }
@@ -102,16 +102,17 @@ class NetworkingServiceTests: XCTestCase {
         // 1. Setup mock URLSession to return valid TimeCapsule JSON data and a 200 OK response.
         // 2. Call networkingService.fetchTimeCapsules()
         // 3. Assert that the returned [TimeCapsule] is decoded correctly.
-
+        
         XCTAssertTrue(true, "Conceptual test for successful decoding - requires URLSession mocking.")
     }
-
+    
     func testFetchTimeCapsules_CorruptData_ThrowsDecodingFailed() async {
         // 1. Setup mock URLSession to return corrupt/invalid JSON data and a 200 OK response.
         // 2. Call networkingService.fetchTimeCapsules()
         // 3. Assert that the error thrown is NetworkError.decodingFailed.
-
+        
         XCTAssertTrue(true, "Conceptual test for corrupt data - requires URLSession mocking.")
     }
     */
 }
+

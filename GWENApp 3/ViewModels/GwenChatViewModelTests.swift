@@ -2,7 +2,7 @@ import XCTest
 import Combine
 import AVFoundation // For AVAudioSession status check
 import Speech // For SFSpeechRecognizer auth status check
-@testable import GWENApp_3 // Replace GWENApp_3 with your actual app module name
+@testable import GWENApplicationXCODE // Replace GWENApp_3 with your actual app module name
 
 @MainActor
 class GwenChatViewModelTests: XCTestCase {
@@ -18,7 +18,7 @@ class GwenChatViewModelTests: XCTestCase {
         mockNetworkingService = MockNetworkingService()
         mockVoiceInputService = MockVoiceInputService()
         mockAudioPlaybackService = MockAudioPlaybackService() // Create this mock
-
+        
         // Initialize viewModel with mocks
         viewModel = GwenChatViewModel(
             networkingService: mockNetworkingService,
@@ -53,15 +53,15 @@ class GwenChatViewModelTests: XCTestCase {
     func testSendCurrentPrompt_Success() {
         let prompt = "Hello GWEN"
         viewModel.currentInput = prompt
-
+        
         let mockAudioData = Data("mock_audio".utf8)
         let mockGwenTranscript = "Hello User"
         mockNetworkingService.sendGwenPromptResult = .success((mockAudioData, mockGwenTranscript))
 
         let expectation = XCTestExpectation(description: "Send prompt success")
-
+        
         viewModel.sendCurrentPrompt()
-
+        
         XCTAssertTrue(mockNetworkingService.sendGwenPromptCalled)
         XCTAssertEqual(mockNetworkingService.lastPromptSent, "hey gwen " + prompt) // ViewModel prepends "hey gwen "
         XCTAssertTrue(viewModel.isThinking) // Should be true initially
@@ -78,7 +78,7 @@ class GwenChatViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 2.0) // Adjust timeout as needed
         XCTAssertTrue(viewModel.currentInput.isEmpty) // Input should be cleared
     }
@@ -88,9 +88,9 @@ class GwenChatViewModelTests: XCTestCase {
         mockNetworkingService.sendGwenPromptResult = .failure(NetworkError.serverError("Server down"))
 
         let expectation = XCTestExpectation(description: "Send prompt network error")
-
+        
         viewModel.sendCurrentPrompt()
-
+        
         XCTAssertTrue(mockNetworkingService.sendGwenPromptCalled)
         XCTAssertTrue(viewModel.isThinking)
 
@@ -102,10 +102,10 @@ class GwenChatViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
-
+    
     func testSendCurrentPrompt_EmptyInput() {
         viewModel.currentInput = "  " // Whitespace only
         viewModel.sendCurrentPrompt()
@@ -136,7 +136,7 @@ class GwenChatViewModelTests: XCTestCase {
 
         XCTAssertTrue(mockVoiceInputService.stopListeningForWakeWordCalled)
     }
-
+    
     func testToggleHeyGwenListening_RequestsPermissionsIfNotGranted() {
         viewModel.hasPermissions = false
         viewModel.toggleHeyGwenListening()
@@ -148,12 +148,12 @@ class GwenChatViewModelTests: XCTestCase {
         // 1. Start "Hey GWEN" listening
         viewModel.hasPermissions = true
         viewModel.toggleHeyGwenListening() // This will set VM's isListeningForHeyGwen via publisher
-
+        
         // 2. Simulate wake word detected from service
         mockVoiceInputService.setWakeWordDetected(to: true)
-
+        
         let expectation = XCTestExpectation(description: "Transition to active listening after wake word")
-
+        
         // Check that ViewModel updates its state accordingly
         // isActivelyListening should become true, currentInput should be cleared
         viewModel.$isActivelyListening.filter { $0 == true }.sink { _ in
@@ -161,29 +161,29 @@ class GwenChatViewModelTests: XCTestCase {
              XCTAssertTrue(self.viewModel.currentInput.isEmpty)
              expectation.fulfill()
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
 
     func testTranscribedTextChanged_UpdatesCurrentInputWhenActivelyListening() {
         viewModel.isActivelyListening = true
         viewModel.isListeningForHeyGwen = false // Ensure not in wake word mode
-
+        
         let newText = "This is a command"
         mockVoiceInputService.setTranscribedText(to: newText)
-
+        
         XCTAssertEqual(viewModel.currentInput, newText)
     }
-
+    
     func testTranscribedTextChanged_DoesNotUpdateCurrentInputWhenNotActivelyListening() {
         viewModel.isActivelyListening = false
         let initialInput = viewModel.currentInput
-
+        
         mockVoiceInputService.setTranscribedText(to: "Some other text")
-
+        
         XCTAssertEqual(viewModel.currentInput, initialInput)
     }
-
+    
     func testRecordingStops_SendsPromptIfInputExists() {
         viewModel.isActivelyListening = true
         viewModel.isListeningForHeyGwen = false
@@ -194,7 +194,7 @@ class GwenChatViewModelTests: XCTestCase {
 
         // Simulate VoiceInputService stopping recording
         mockVoiceInputService.setIsRecording(to: false)
-
+        
         let expectation = XCTestExpectation(description: "Send prompt on recording stop")
 
         // Check if sendCurrentPrompt was called (indirectly by checking network call)
@@ -204,10 +204,10 @@ class GwenChatViewModelTests: XCTestCase {
             XCTAssertFalse(self.viewModel.isActivelyListening) // isActivelyListening should be false now
             expectation.fulfill()
         }
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
-
+    
     func testStartActiveListening_ManualMicTap() {
         viewModel.hasPermissions = true
         viewModel.isListeningForHeyGwen = true // Simulate Hey GWEN was on
@@ -240,3 +240,4 @@ class GwenChatViewModelTests: XCTestCase {
 // MockAudioPlaybackService and its protocol are now in their own files:
 // GWENApp 3/Tests/Mocks/MockAudioPlaybackService.swift
 // GWENApp 3/Services/AudioPlaybackServiceProtocol.swift
+

@@ -2,7 +2,7 @@ import Foundation
 import MapKit
 import Combine
 
-class MapKitService: ObservableObject, MapKitServiceProtocol { // Added MapKitServiceProtocol
+class MapKitService: ObservableObject { // Added MapKitServiceProtocol
     static let shared = MapKitService()
     
     @Published var searchResults: [MKMapItem] = []
@@ -73,14 +73,14 @@ class MapKitService: ObservableObject, MapKitServiceProtocol { // Added MapKitSe
     // This method was in the original service. The protocol might need adjustment if it's different.
     // The protocol asks for convertPlaceSearchResultToMapItem and convertMapItemToPlaceSearchResult.
     // Let's ensure those are present and public.
-
+    
     // Assuming Place and PlaceSearchResult are defined in DataModels.swift
     // and PlaceSearchResult has necessary fields.
     public func convertMapItemToPlaceSearchResult(mapItem: MKMapItem) -> PlaceSearchResult {
         // This is a sample implementation. Actual fields depend on PlaceSearchResult definition.
         let placemark = mapItem.placemark
         return PlaceSearchResult(
-            id: mapItem.id.uuidString, // MKMapItem is Identifiable from PlacesSearchView
+            id: UUID().uuidString, // Generate a unique ID
             name: mapItem.name ?? "Unknown Place",
             address: placemark.title, // MKPlacemark's title often has a good address string
             lat: String(placemark.coordinate.latitude), // Assuming lat/lon are strings in PlaceSearchResult
@@ -134,3 +134,4 @@ class MapKitService: ObservableObject, MapKitServiceProtocol { // Added MapKitSe
         .eraseToAnyPublisher()
     }
 }
+

@@ -21,7 +21,7 @@ struct AddTimeCapsuleView: View {
                         displayedComponents: [.date, .hourAndMinute]
                     )
                 }
-
+                
                 if let errorMessage = viewModel.errorMessage, !errorMessage.isEmpty {
                     Section {
                         Text(errorMessage)
@@ -74,3 +74,4 @@ struct AddTimeCapsuleView_Previews: PreviewProvider {
             .environmentObject(TimeCapsuleViewModel()) // Provide a dummy ViewModel for preview
     }
 }
+

@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import AVFoundation
 
-class AudioPlaybackService: ObservableObject, AudioPlaybackServiceProtocol { // Added AudioPlaybackServiceProtocol
+class AudioPlaybackService: NSObject, ObservableObject, AudioPlaybackServiceProtocol { // Added AudioPlaybackServiceProtocol
     static let shared = AudioPlaybackService()
     
     private var player: AVAudioPlayer?
@@ -14,7 +14,8 @@ class AudioPlaybackService: ObservableObject, AudioPlaybackServiceProtocol { // 
     
     private var progressTimer: Timer?
     
-    private init() {
+    private override init() {
+        super.init()
         setupAudioSession()
     }
     
@@ -27,20 +28,19 @@ class AudioPlaybackService: ObservableObject, AudioPlaybackServiceProtocol { // 
         }
     }
     
-    func playAudio(data: Data) {
+    func playAudio(data: Data) async throws {
         stopAudio()
-        
+
         do {
             player = try AVAudioPlayer(data: data)
             player?.prepareToPlay()
             player?.delegate = self
-            
+
             if let player = player {
                 duration = player.duration
                 player.play()
                 isPlaying = true
-                
-                // Start progress timer
+
                 progressTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
                     guard let self = self, let player = self.player else { return }
                     self.progress = Float(player.currentTime / player.duration)
@@ -48,8 +48,10 @@ class AudioPlaybackService: ObservableObject, AudioPlaybackServiceProtocol { // 
             }
         } catch {
             print("Failed to play audio: \(error.localizedDescription)")
+            throw error // ✅ Propagate the error
         }
     }
+
     
     func stopAudio() {
         player?.stop()
@@ -100,3 +102,4 @@ extension AudioPlaybackService: AVAudioPlayerDelegate {
         }
     }
 }
+

@@ -72,7 +72,7 @@ class TimeCapsuleViewModel: ObservableObject {
 
     func deleteTimeCapsule(at offsets: IndexSet) {
         let capsulesToDelete = offsets.map { timeCapsules[$0] }
-
+        
         // Remove from local array immediately for UI responsiveness
         timeCapsules.remove(atOffsets: offsets)
 
@@ -100,3 +100,4 @@ class TimeCapsuleViewModel: ObservableObject {
 // Removed local NetworkingServiceProtocol definition.
 // Assuming a global protocol is defined in NetworkingServiceProtocol.swift
 // and NetworkingService.shared conforms to it.
+

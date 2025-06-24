@@ -17,7 +17,7 @@ protocol MapKitServiceProtocol {
     // However, PlacesViewModel uses it as a Combine publisher.
     // This highlights another area for future refactor towards pure async/await.
     // For now, match what PlacesViewModel expects from its MapKitService dependency.
-
+    
     func searchForPlaces(near location: CLLocationCoordinate2D, query: String, radius: CLLocationDistance) -> AnyPublisher<[MKMapItem], Error>
     // Renamed searchNearbyPlaces to searchForPlaces for protocol clarity, and added radius.
     // The implementation in MapKitService.swift will need to match or be adapted.
@@ -44,11 +44,11 @@ extension MapKitService: MapKitServiceProtocol {
                 promise(.failure(NSError(domain: "MapKitService", code: -1, userInfo: [NSLocalizedDescriptionKey: "Self is nil"])))
                 return
             }
-
+            
             let request = MKLocalSearch.Request()
             request.naturalLanguageQuery = query
             request.region = MKCoordinateRegion(center: location, latitudinalMeters: radius, longitudinalMeters: radius)
-
+            
             let search = MKLocalSearch(request: request)
             search.start { response, error in
                 if let error = error {
@@ -76,7 +76,7 @@ extension MapKitService: MapKitServiceProtocol {
             .compactMap { $0 } // Ensure we have a route
             .eraseToAnyPublisher()
     }
-
+    
     // Helper methods are directly implemented in MapKitService, no change needed for protocol conformance here
     // as long as their signatures match what the protocol might require (if they were part of it).
     // The current protocol definition includes them, so they must be public in MapKitService.
@@ -94,3 +94,4 @@ struct PlaceSearchResult: Identifiable {
     // Add other relevant properties that MapKitService.convertMapItemToPlaceSearchResult provides
 }
 */
+

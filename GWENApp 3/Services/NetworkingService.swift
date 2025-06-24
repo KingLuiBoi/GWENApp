@@ -4,7 +4,7 @@ import Combine
 // Assuming NetworkError is defined here or accessible globally.
 // If not, its definition should be moved to a shared file or NetworkingServiceProtocol.swift.
 
-class NetworkingService: NetworkingServiceProtocol { // Added conformance
+class NetworkingService: ObservableObject, NetworkingServiceProtocol { // Added conformance
     static let shared = NetworkingService()
     
     private let baseURL = "http://127.0.0.1:5050" // Default placeholder
@@ -23,7 +23,7 @@ class NetworkingService: NetworkingServiceProtocol { // Added conformance
 
 extension NetworkingService {
     // GWEN Chat
-    func sendGwenPrompt(prompt: String) async throws -> Data {
+    func sendGwenPrompt(prompt: String) async throws -> (Data, String) {
         guard let url = URL(string: "\(baseURL)/gwen") else {
             throw NetworkError.invalidURL
         }
@@ -40,13 +40,14 @@ extension NetworkingService {
             guard let httpResponse = response as? HTTPURLResponse else {
                 throw NetworkError.invalidResponse
             }
-
+            
             if httpResponse.statusCode >= 400 {
                 let errorMessage = String(data: data, encoding: .utf8) ?? "Unknown server error"
                 throw NetworkError.serverError(errorMessage)
             }
-
-            return data
+            
+            let textResponse = httpResponse.value(forHTTPHeaderField: "X-GWEN-Response-Text") ?? ""
+            return (data, textResponse)
         } catch let error as NetworkError {
             throw error
         } catch {
@@ -400,3 +401,4 @@ extension NetworkingService {
 // Note: A proper refactor would involve replacing Combine publishers with async/await URLSession calls
 // or properly bridging them. The above are mostly placeholders to satisfy the protocol.
 // A private Set<AnyCancellable> would be needed if using the Future bridging approach within these async funcs.
+

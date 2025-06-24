@@ -3,7 +3,7 @@ import Combine
 import AVFoundation
 import Speech
 
-class VoiceInputService: NSObject, ObservableObject, VoiceInputServiceProtocol { // Added VoiceInputServiceProtocol
+class VoiceInputService: NSObject, ObservableObject {
     static let shared = VoiceInputService()
     
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))
@@ -17,10 +17,8 @@ class VoiceInputService: NSObject, ObservableObject, VoiceInputServiceProtocol {
     @Published var wakeWordDetected = false
     
     // Computed property to satisfy VoiceInputServiceProtocol for synchronous check
-    var isListeningForWakeWordValue: Bool {
-        return isListeningForWakeWord // Directly return the current value of the @Published property
-    }
 
+    
     private var cancellables = Set<AnyCancellable>()
     
     override private init() {
@@ -28,7 +26,7 @@ class VoiceInputService: NSObject, ObservableObject, VoiceInputServiceProtocol {
         requestPermissions()
     }
     
-    private func requestPermissions() {
+    func requestPermissions() {
         SFSpeechRecognizer.requestAuthorization { [weak self] status in
             DispatchQueue.main.async {
                 switch status {
@@ -160,3 +158,40 @@ class VoiceInputService: NSObject, ObservableObject, VoiceInputServiceProtocol {
         isRecording = false
     }
 }
+extension VoiceInputService: VoiceInputServiceProtocol {
+    var transcribedTextPublisher: AnyPublisher<String, Never> {
+        $transcribedText.eraseToAnyPublisher()
+    }
+
+    var isRecordingPublisher: AnyPublisher<Bool, Never> {
+        $isRecording.eraseToAnyPublisher()
+    }
+
+    var wakeWordDetectedPublisher: AnyPublisher<Bool, Never> {
+        $wakeWordDetected.eraseToAnyPublisher()
+    }
+
+    func startListening() {
+        startRecording(forWakeWordDetection: false)
+    }
+
+    func stopListening() {
+        stopRecording()
+    }
+
+    func startWakeWordDetection() {
+        startListeningForWakeWord()
+    }
+
+    func stopWakeWordDetection() {
+        stopListeningForWakeWord()
+    }
+}
+
+
+
+
+    // Methods like requestPermissions(), startListeningForWakeWord(), etc.,
+    // are likely already satisfied by the main class implementation if their signatures match the protocol.
+    // The isListeningForWakeWordValue property is also already satisfied.
+

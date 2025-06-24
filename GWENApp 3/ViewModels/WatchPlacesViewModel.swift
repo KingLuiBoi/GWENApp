@@ -1,18 +1,16 @@
 import Foundation
 import Combine
-import CoreLocation // For CLLocationCoordinate2D
-
-// Assuming NetworkingServiceProtocol and LocationServiceProtocol are defined and accessible.
+import CoreLocation
 
 @MainActor
 class WatchPlacesViewModel: ObservableObject {
-    @Published var searchResults: [Place] = [] // Using Place model directly
+    @Published var searchResults: [Place] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
-    @Published var searchQuery: String = "" // For text input via dictation
+    @Published var searchQuery: String = ""
 
     private let networkingService: NetworkingServiceProtocol
-    let locationService: LocationServiceProtocol // Made public for view access if needed for permissions
+    let locationService: LocationServiceProtocol
     private var cancellables = Set<AnyCancellable>()
 
     init(
@@ -22,26 +20,25 @@ class WatchPlacesViewModel: ObservableObject {
         self.networkingService = networkingService
         self.locationService = locationService
 
-        subscribeToLocationServices() // Renamed for clarity
+        subscribeToLocationServices()
     }
 
-    private func subscribeToLocationServices() { // Renamed for clarity
-        locationService.authorizationStatus
+    private func subscribeToLocationServices() {
+        locationService.authorizationStatusPublisher
             .sink { [weak self] status in
                 guard let self = self else { return }
+
                 if status == .authorizedWhenInUse || status == .authorizedAlways {
-                    self.locationService.startUpdatingLocation() // Ensure location updates start if permitted
+                    self.locationService.startUpdatingLocation()
                 } else {
                     self.locationService.stopUpdatingLocation()
-                    // Optionally, prompt for permissions if status is notDetermined,
-                    // or inform user if denied/restricted.
                 }
             }
             .store(in: &cancellables)
     }
 
     func searchPlaces(type: String? = nil) {
-        let effectiveSearchQuery = type ?? searchQuery // Use specific type if provided, else use bound searchQuery
+        let effectiveSearchQuery = type ?? searchQuery
 
         guard !effectiveSearchQuery.isEmpty else {
             errorMessage = "Search query is empty."
@@ -49,14 +46,17 @@ class WatchPlacesViewModel: ObservableObject {
             return
         }
 
-        guard let coordinates = locationService.currentLocation.value else {
+        guard let location = locationService.currentLocation else {
             errorMessage = "Location unknown."
-            // Attempt to request permissions/location if not available
-            if locationService.authorizationStatus.value == .notDetermined {
+
+            let authStatus = locationService.authorizationStatus
+
+            if authStatus == .notDetermined {
                 locationService.requestLocationPermissions()
-            } else if locationService.authorizationStatus.value == .authorizedWhenInUse || locationService.authorizationStatus.value == .authorizedAlways {
-                 locationService.startUpdatingLocation() // Try to get a location fix
+            } else if authStatus == .authorizedWhenInUse || authStatus == .authorizedAlways {
+                locationService.startUpdatingLocation()
             }
+
             searchResults = []
             return
         }
@@ -67,9 +67,10 @@ class WatchPlacesViewModel: ObservableObject {
         Task {
             do {
                 let results = try await networkingService.searchPlaces(
-                    lat: coordinates.latitude,
-                    lon: coordinates.longitude,
-                    type: effectiveSearchQuery
+                    lat: location.coordinate.latitude,
+                    lon: location.coordinate.longitude,
+                    type: effectiveSearchQuery,
+                    radius: 1000 // ✅ required argument
                 )
                 self.searchResults = results
                 if results.isEmpty {
@@ -77,20 +78,20 @@ class WatchPlacesViewModel: ObservableObject {
                 }
             } catch {
                 self.errorMessage = "Search error: \(error.localizedDescription.prefix(50))"
-                print("Error searching places on watch: \(error)")
                 self.searchResults = []
             }
             self.isLoading = false
         }
     }
-    
+
     func requestLocationAccessIfNeeded() {
-        // This ensures that location permission is requested if not already determined.
-        // And starts location updates if permitted.
-        if locationService.authorizationStatus.value == .notDetermined {
+        let authStatus = locationService.authorizationStatus
+
+        if authStatus == .notDetermined {
             locationService.requestLocationPermissions()
-        } else if locationService.authorizationStatus.value == .authorizedWhenInUse || locationService.authorizationStatus.value == .authorizedAlways {
+        } else if authStatus == .authorizedWhenInUse || authStatus == .authorizedAlways {
             locationService.startUpdatingLocation()
         }
     }
 }
+

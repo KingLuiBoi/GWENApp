@@ -10,15 +10,6 @@ struct GwenMessage: Identifiable {
     var audioData: Data?
 }
 
-// MARK: - GWEN Interaction Model
-struct GwenInteraction: Identifiable {
-    let id = UUID()
-    let userPrompt: String
-    var gwenTranscript: String?
-    var audioData: Data?
-    let timestamp: Date = Date()
-}
-
 // MARK: - Time Capsule Models
 struct TimeCapsule: Codable, Identifiable {
     let id: Int
@@ -166,3 +157,4 @@ struct HealthCheckResponse: Codable {
         return openai_api_key_set && elevenlabs_api_key_set && gwen_voice_id_set && google_api_key_set
     }
 }
+

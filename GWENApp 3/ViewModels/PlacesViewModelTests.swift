@@ -1,7 +1,7 @@
 import XCTest
 import Combine
 import MapKit // For MKMapItem, MKCoordinateRegion, MKRoute
-@testable import GWENApp_3 // Replace with your app module name
+@testable import GWENApplicationXCODE // Replace with your app module name
 
 @MainActor
 class PlacesViewModelTests: XCTestCase {
@@ -17,7 +17,7 @@ class PlacesViewModelTests: XCTestCase {
         mockNetworkingService = MockNetworkingService()
         mockLocationService = MockLocationService()
         mockMapKitService = MockMapKitService()
-
+        
         viewModel = PlacesViewModel(
             networkingService: mockNetworkingService,
             locationService: mockLocationService,
@@ -52,19 +52,19 @@ class PlacesViewModelTests: XCTestCase {
     func testPerformSearch_Success_MapKitResults() {
         viewModel.searchQuery = "cafe"
         mockLocationService.setCurrentLocation(to: CLLocationCoordinate2D(latitude: 37.0, longitude: -122.0))
-
+        
         let mockMKMapItem = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 37.1, longitude: -122.1)))
         mockMKMapItem.name = "Mock Cafe"
         let mockMapItems = [mockMKMapItem]
         mockMapKitService.searchForPlacesResult = .success(mockMapItems)
-
+        
         let mockPlaceSearchResult = PlaceSearchResult(id: "mock1", name: "Mock Cafe", address: "123 Mock St", lat: "37.1", lon: "-122.1")
         mockMapKitService.mockPlaceSearchResult = mockPlaceSearchResult // Used by convertMapItemToPlaceSearchResult
 
         let expectation = XCTestExpectation(description: "Perform search with MapKit success")
-
+        
         viewModel.performSearch()
-
+        
         XCTAssertTrue(mockMapKitService.searchForPlacesCalled)
         XCTAssertEqual(mockMapKitService.lastSearchQuery, "cafe")
         XCTAssertTrue(viewModel.isLoading)
@@ -80,30 +80,30 @@ class PlacesViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
-
+    
     func testPerformSearch_Success_BackendResultsAfterMapKitEmpty() {
         viewModel.searchQuery = "park"
         mockLocationService.setCurrentLocation(to: CLLocationCoordinate2D(latitude: 37.0, longitude: -122.0))
-
+        
         // MapKit returns empty
         mockMapKitService.searchForPlacesResult = .success([])
-
+        
         // Backend returns results
         let backendPlaces = [Place(name: "Backend Park", place_id: "bp1", vicinity: "Backend Ave", latitude: 37.2, longitude: -122.2, rating: 4.0, types: ["park"])]
         mockNetworkingService.searchPlacesResult = .success(backendPlaces)
-
+        
         // Mock conversion from Place to MKMapItem
         let mockMKMapItem = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 37.2, longitude: -122.2)))
         mockMKMapItem.name = "Backend Park"
         mockMapKitService.mockMapItemFromResult = mockMKMapItem // Used by convertPlaceSearchResultToMapItem
 
         let expectation = XCTestExpectation(description: "Perform search with backend success")
-
+        
         viewModel.performSearch()
-
+        
         XCTAssertTrue(mockMapKitService.searchForPlacesCalled)
         XCTAssertTrue(viewModel.isLoading)
 
@@ -120,21 +120,21 @@ class PlacesViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
 
     func testPerformSearch_MapKitError_FallbackToBackend_BackendError() {
         viewModel.searchQuery = "store"
         mockLocationService.setCurrentLocation(to: CLLocationCoordinate2D(latitude: 37.0, longitude: -122.0))
-
+        
         mockMapKitService.searchForPlacesResult = .failure(NSError(domain: "MapKitError", code: 1))
         mockNetworkingService.searchPlacesResult = .failure(NetworkError.serverError("Backend down"))
 
         let expectation = XCTestExpectation(description: "Perform search with MapKit and Backend errors")
-
+        
         viewModel.performSearch()
-
+        
         XCTAssertTrue(mockMapKitService.searchForPlacesCalled)
         XCTAssertTrue(viewModel.isLoading)
 
@@ -149,24 +149,24 @@ class PlacesViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
-
+    
     func testPerformSearch_NoLocation() {
         viewModel.searchQuery = "anything"
         mockLocationService.setCurrentLocation(to: nil) // No current location
         mockLocationService.authorizationStatusValue = .denied // And no permission to get it
 
         viewModel.performSearch()
-
+        
         XCTAssertFalse(viewModel.isLoading)
         XCTAssertNotNil(viewModel.errorMessage)
         XCTAssertTrue(viewModel.errorMessage!.contains("Could not determine your current location"))
         XCTAssertFalse(mockMapKitService.searchForPlacesCalled)
         XCTAssertFalse(mockNetworkingService.searchPlacesCalled)
     }
-
+    
     func testPerformSearch_EmptyQuery() {
         viewModel.searchQuery = ""
         viewModel.performSearch()
@@ -180,16 +180,16 @@ class PlacesViewModelTests: XCTestCase {
         let mockSelectedItem = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 37.1, longitude: -122.1)))
         mockSelectedItem.name = "Destination Cafe"
         viewModel.selectedMapItem = mockSelectedItem
-
+        
         mockLocationService.setCurrentLocation(to: CLLocationCoordinate2D(latitude: 37.0, longitude: -122.0))
-
+        
         let mockRoute = MKRoute() // Basic mock route
         mockMapKitService.getDirectionsResult = .success(mockRoute)
 
         let expectation = XCTestExpectation(description: "Get directions success")
-
+        
         viewModel.getDirectionsToSelectedItem()
-
+        
         XCTAssertTrue(mockMapKitService.getDirectionsCalled)
         XCTAssertTrue(viewModel.isLoading)
 
@@ -202,10 +202,10 @@ class PlacesViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
-
+    
     func testGetDirectionsToSelectedItem_NoSelectedItem() {
         viewModel.selectedMapItem = nil
         viewModel.getDirectionsToSelectedItem()
@@ -213,14 +213,14 @@ class PlacesViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.errorMessage)
         XCTAssertTrue(viewModel.errorMessage!.contains("Cannot get directions"))
     }
-
+    
     func testGetDirectionsToSelectedItem_NoUserLocation() {
         viewModel.selectedMapItem = MKMapItem() // Dummy item
         mockLocationService.setCurrentLocation(to: nil)
         mockLocationService.authorizationStatusValue = .denied
 
         viewModel.getDirectionsToSelectedItem()
-
+        
         XCTAssertFalse(mockMapKitService.getDirectionsCalled)
         XCTAssertNotNil(viewModel.errorMessage)
         XCTAssertTrue(viewModel.errorMessage!.contains("Cannot get directions"))
@@ -230,23 +230,24 @@ class PlacesViewModelTests: XCTestCase {
     func testSelectMapItem() {
         let mockMapItem = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 37.1, longitude: -122.1)))
         mockMapItem.name = "Selected Item"
-
+        
         viewModel.selectMapItem(mockMapItem)
-
+        
         XCTAssertEqual(viewModel.selectedMapItem, mockMapItem)
         XCTAssertEqual(viewModel.region.center.latitude, mockMapItem.placemark.coordinate.latitude)
         XCTAssertEqual(viewModel.region.center.longitude, mockMapItem.placemark.coordinate.longitude)
         XCTAssertEqual(viewModel.region.span.latitudeDelta, 0.01, accuracy: 0.001) // Zoomed in span
     }
-
+    
     func testRequestLocationAccessIfNeeded() {
         mockLocationService.authorizationStatusValue = .notDetermined
         viewModel.requestLocationAccessIfNeeded()
         XCTAssertTrue(mockLocationService.requestLocationPermissionsCalled)
-
+        
         mockLocationService.reset()
         mockLocationService.authorizationStatusValue = .authorizedWhenInUse
         viewModel.requestLocationAccessIfNeeded()
         XCTAssertTrue(mockLocationService.startUpdatingLocationCalled)
     }
 }
+

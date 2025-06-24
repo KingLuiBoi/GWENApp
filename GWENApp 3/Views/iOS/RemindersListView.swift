@@ -98,15 +98,15 @@ struct ReminderRow: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
-                Text(reminder.reminder)
+                Text(reminder.note)
                     .font(.headline)
                     .foregroundColor(isTriggered ? .orange : .primary)
-                Text("At: \(reminder.place_name)")
+                Text("At: \(reminder.place)")
                     .font(.subheadline)
-                Text("Set: \(reminder.createdDate, style: .date)")
+                Text("Set: \(reminder.displayDate)")
                     .font(.footnote)
                     .foregroundColor(.gray)
-                Text("Coords: Lat \(String(format: "%.4f", reminder.latitude)), Lon \(String(format: "%.4f", reminder.longitude))")
+                Text("Coords: Lat \(String(format: "%.4f", reminder.lat)), Lon \(String(format: "%.4f", reminder.lon))")
                     .font(.caption2)
                     .foregroundColor(.gray)
             }
@@ -135,14 +135,14 @@ struct AddReminderView: View {
                     HStack {
                         TextField("Place Name (e.g., Grocery Store)", text: $viewModel.newReminderPlace)
                         Button {
-                            viewModel.searchResults = [] // Clear previous search results before showing picker
+                            viewModel.mapSearchResults = [] // Clear previous search results before showing picker
                             showingLocationPicker = true
                         } label: {
                             Image(systemName: "map.fill")
                         }
-                        .disabled(viewModel.locationService.authorizationStatusValue == .denied)
+                        .disabled(viewModel.locationService.authorizationStatus == .denied)
                     }
-
+                    
                     if let coords = viewModel.newReminderCoordinates {
                         Text("Selected: Lat \(String(format: "%.4f", coords.latitude)), Lon \(String(format: "%.4f", coords.longitude))")
                             .font(.caption)
@@ -269,7 +269,7 @@ struct LocationPickerView: View {
                             .background(Color.secondary.opacity(0.5)) // Updated background for better visibility
                             .cornerRadius(10)
                     }
-
+                    
                     Button("Confirm Map Center") {
                         let centerCoordinate = viewModel.region.center
                         // Reverse geocode to get a place name
@@ -301,3 +301,5 @@ struct LocationPickerView: View {
         }
     }
 }
+
+

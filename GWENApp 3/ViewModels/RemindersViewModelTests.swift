@@ -2,7 +2,7 @@ import XCTest
 import Combine
 import CoreLocation
 import MapKit
-@testable import GWENApp_3 // Replace with your app module name
+@testable import GWENApplicationXCODE // Replace with your app module name
 
 @MainActor
 class RemindersViewModelTests: XCTestCase {
@@ -18,7 +18,7 @@ class RemindersViewModelTests: XCTestCase {
         mockNetworkingService = MockNetworkingService()
         mockLocationService = MockLocationService()
         mockMapKitService = MockMapKitService()
-
+        
         viewModel = RemindersViewModel(
             networkingService: mockNetworkingService,
             locationService: mockLocationService,
@@ -58,11 +58,11 @@ class RemindersViewModelTests: XCTestCase {
             LocationReminder(id: 1, reminder: "Test Reminder 1", latitude: 0, longitude: 0, place_name: "Place 1", radius: 100, created_at: Date().timeIntervalSince1970)
         ]
         mockNetworkingService.fetchLocationRemindersResult = .success(mockReminders)
-
+        
         let expectation = XCTestExpectation(description: "Fetch reminders success")
-
+        
         viewModel.fetchReminders()
-
+        
         XCTAssertTrue(mockNetworkingService.fetchLocationRemindersCalled)
         XCTAssertTrue(viewModel.isLoading)
 
@@ -75,17 +75,17 @@ class RemindersViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
 
     func testFetchReminders_Failure() {
         mockNetworkingService.fetchLocationRemindersResult = .failure(NetworkError.serverError("Fetch failed"))
-
+        
         let expectation = XCTestExpectation(description: "Fetch reminders failure")
-
+        
         viewModel.fetchReminders()
-
+        
         XCTAssertTrue(mockNetworkingService.fetchLocationRemindersCalled)
         XCTAssertTrue(viewModel.isLoading)
 
@@ -98,7 +98,7 @@ class RemindersViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
 
@@ -107,14 +107,14 @@ class RemindersViewModelTests: XCTestCase {
         viewModel.newReminderPlace = "New Place"
         viewModel.newReminderNote = "New Note"
         viewModel.newReminderCoordinates = CLLocationCoordinate2D(latitude: 10, longitude: 10)
-
+        
         let createdReminder = LocationReminder(id: 2, reminder: "New Note", latitude: 10, longitude: 10, place_name: "New Place", radius: 100, created_at: Date().timeIntervalSince1970)
         mockNetworkingService.createLocationReminderResult = .success(createdReminder)
 
         let expectation = XCTestExpectation(description: "Add reminder success")
-
+        
         viewModel.addReminder()
-
+        
         XCTAssertTrue(mockNetworkingService.createLocationReminderCalled)
         XCTAssertEqual(mockNetworkingService.lastReminderPlace, "New Place")
         XCTAssertEqual(mockNetworkingService.lastReminderNote, "New Note")
@@ -130,18 +130,18 @@ class RemindersViewModelTests: XCTestCase {
             XCTAssertNil(self.viewModel.errorMessage)
             expectation.fulfill()
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
-
+    
     func testAddReminder_Failure() {
         viewModel.newReminderPlace = "Test"
         viewModel.newReminderNote = "Test"
         viewModel.newReminderCoordinates = CLLocationCoordinate2D(latitude: 0, longitude: 0)
         mockNetworkingService.createLocationReminderResult = .failure(NetworkError.serverError("Create failed"))
-
+        
         viewModel.addReminder()
-
+        
         let expectation = XCTestExpectation(description: "Add reminder failure")
         viewModel.$errorMessage.dropFirst().sink { errorMsg in
             if errorMsg != nil {
@@ -159,27 +159,27 @@ class RemindersViewModelTests: XCTestCase {
         viewModel.newReminderNote = "" // Missing note
         viewModel.newReminderPlace = "Some Place"
         viewModel.newReminderCoordinates = CLLocationCoordinate2D(latitude: 0, longitude: 0)
-
+        
         viewModel.addReminder()
-
+        
         XCTAssertFalse(mockNetworkingService.createLocationReminderCalled)
         XCTAssertNotNil(viewModel.errorMessage)
         XCTAssertEqual(viewModel.errorMessage, "Place, note, and coordinates are required for a reminder.")
     }
-
+    
     // MARK: - Location Search Tests (for LocationPicker)
     func testSearchLocations_Success() {
         viewModel.searchQuery = "Library"
         mockLocationService.setCurrentLocation(to: CLLocationCoordinate2D(latitude: 0, longitude: 0))
-
+        
         let mockMapItem = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 0.1, longitude: 0.1)))
         mockMapItem.name = "Mock Library"
         mockMapKitService.searchForPlacesResult = .success([mockMapItem])
-
+        
         let expectation = XCTestExpectation(description: "Search locations success")
-
+        
         viewModel.searchLocations()
-
+        
         XCTAssertTrue(mockMapKitService.searchForPlacesCalled)
         XCTAssertEqual(mockMapKitService.lastSearchQuery, "Library")
         XCTAssertTrue(viewModel.isLoading)
@@ -194,40 +194,41 @@ class RemindersViewModelTests: XCTestCase {
         }.store(in: &cancellables)
         wait(for: [expectation], timeout: 1.0)
     }
-
+    
     // MARK: - Select Location / MapItem
     func testSelectMapItem() {
         let mockCoordinate = CLLocationCoordinate2D(latitude: 12.34, longitude: 56.78)
         let mockPlacemark = MKPlacemark(coordinate: mockCoordinate)
         let mockMapItem = MKMapItem(placemark: mockPlacemark)
         mockMapItem.name = "Selected Mock Place"
-
+        
         viewModel.selectMapItem(mockMapItem)
-
+        
         XCTAssertEqual(viewModel.selectedMapItem, mockMapItem)
         XCTAssertEqual(viewModel.newReminderCoordinates?.latitude, mockCoordinate.latitude)
         XCTAssertEqual(viewModel.newReminderCoordinates?.longitude, mockCoordinate.longitude)
         XCTAssertEqual(viewModel.newReminderPlace, "Selected Mock Place")
         XCTAssertFalse(viewModel.showLocationPicker) // Should hide picker after selection
     }
-
+    
     func testSelectLocation_WithPlaceName() {
         let mockCoordinate = CLLocationCoordinate2D(latitude: 1.1, longitude: 2.2)
         let placeName = "Custom Place Name"
-
+        
         viewModel.selectLocation(mockCoordinate, placeName: placeName)
-
+        
         XCTAssertEqual(viewModel.newReminderCoordinates?.latitude, mockCoordinate.latitude)
         XCTAssertEqual(viewModel.newReminderPlace, placeName)
     }
-
+    
     func testSelectLocation_WithoutPlaceName_UsesGeneric() {
         let mockCoordinate = CLLocationCoordinate2D(latitude: 3.3, longitude: 4.4)
         viewModel.newReminderPlace = "" // Ensure it's empty to test fallback
-
+        
         viewModel.selectLocation(mockCoordinate, placeName: nil)
-
+        
         XCTAssertEqual(viewModel.newReminderCoordinates?.latitude, mockCoordinate.latitude)
         XCTAssertTrue(viewModel.newReminderPlace.contains("Location (3.3000, 4.4000)"))
     }
 }
+

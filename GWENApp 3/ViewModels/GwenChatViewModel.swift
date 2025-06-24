@@ -1,230 +1,148 @@
-//
-//  GwenChatViewModel.swift
-//  GWENApp
-//
-//  Created by Manus on 5/14/25.
-//
-
 import Foundation
 import Combine
-import SwiftUI // For Color, etc. if used in displayable items
-import Speech
 import AVFoundation
+import Speech
 
+@MainActor
 class GwenChatViewModel: ObservableObject {
-    // MARK: - Published Properties
-    @Published var conversation: [GwenInteraction] = []
+    @Published var hasPermissions = false
+    @Published var isActivelyListening: Bool = false
+    @Published var isListeningForHeyGwen = false
+    @Published var isThinking = false
+    @Published var isGwenSpeaking = false
+    @Published var lastUserPrompt: String?
+    @Published var lastGwenResponse: String?
+    @Published var errorMessage: String?
     @Published var currentInput: String = ""
-    @Published var isThinking: Bool = false // To show a thinking indicator
-    @Published var errorMessage: String? = nil
-    @Published var hasPermissions: Bool = false
-    @Published var isListeningForHeyGwen: Bool = false
-    @Published var isActivelyListening: Bool = false // After "Hey GWEN" or manual tap
-
-    // MARK: - Services
-    private let networkingService: NetworkingServiceProtocol
-    private let voiceInputService: VoiceInputServiceProtocol
-    private let audioPlaybackService: AudioPlaybackServiceProtocol
+    @Published var conversation: [GwenInteraction] = []
 
     private var cancellables = Set<AnyCancellable>()
+    private let voiceService: VoiceInputServiceProtocol
+    private let networkingService: NetworkingServiceProtocol
+    private let audioService: AudioPlaybackServiceProtocol
 
     init(
+        voiceService: VoiceInputServiceProtocol = VoiceInputService.shared,
         networkingService: NetworkingServiceProtocol = NetworkingService.shared,
-        voiceInputService: VoiceInputServiceProtocol = VoiceInputService.shared,
-        audioPlaybackService: AudioPlaybackServiceProtocol = AudioPlaybackService.shared
+        audioService: AudioPlaybackServiceProtocol = AudioPlaybackService.shared
     ) {
+        self.voiceService = voiceService
         self.networkingService = networkingService
-        self.voiceInputService = voiceInputService
-        self.audioPlaybackService = audioPlaybackService
-        
-        checkPermissions()
-        subscribeToVoiceInput()
-        subscribeToAudioPlayback()
+        self.audioService = audioService
+
+        observeVoiceInputs()
+        requestVoicePermissions()
     }
 
-    private func checkPermissions() {
-        // Simplified check; VoiceInputService should handle actual permission status
-        // For now, assume we need to request if not explicitly known
-        if SFSpeechRecognizer.authorizationStatus() == .authorized && AVAudioSession.sharedInstance().recordPermission == .granted {
-            hasPermissions = true
-        } else {
-            hasPermissions = false
-            // voiceInputService.requestPermissions() // Or trigger this from UI
-        }
-    }
-
-    private func subscribeToVoiceInput() {
-        // Update isListeningForHeyGwen based on the service's state
-        voiceInputService.isListeningForWakeWord
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.isListeningForHeyGwen, on: self)
-            .store(in: &cancellables)
-
-        // Handle wake word detection
-        voiceInputService.wakeWordDetected
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] detected in
-                guard let self = self, detected else { return }
-                print("ViewModel: Wake word detected by service!")
-                // Service itself handles stopping wake word listening and starting command recording.
-                // ViewModel needs to update its state to reflect that it's now actively listening for a command.
-                self.isActivelyListening = true
-                self.currentInput = "" // Ensure input is clear for the new command
-                // Potentially provide haptic/audio feedback here if needed
-            }
-            .store(in: &cancellables)
-
-        // Update transcribedText from the service
-        voiceInputService.transcribedText
-            .receive(on: DispatchQueue.main)
+    private func observeVoiceInputs() {
+        voiceService.transcribedTextPublisher
             .sink { [weak self] text in
-                guard let self = self else { return }
-                // Only update currentInput if we are in active listening mode (post-wake word or manual)
-                // and not in wake word detection mode.
-                if self.isActivelyListening && !self.isListeningForHeyGwen {
-                    self.currentInput = text
-                }
+                guard let self = self, !text.isEmpty else { return }
+                self.lastUserPrompt = text
+                self.sendPromptToGwen(text)
             }
             .store(in: &cancellables)
 
-        // Update isActivelyListening based on the service's recording state
-        // This replaces the old `voiceInputService.isListening`
-        voiceInputService.isRecording
-            .receive(on: DispatchQueue.main)
+        voiceService.isRecordingPublisher
             .sink { [weak self] isRecording in
-                guard let self = self else { return }
-
-                // If recording stops, and we were actively listening (not for wake word),
-                // and there's text, consider it the end of a command.
-                if !isRecording && self.isActivelyListening && !self.isListeningForHeyGwen {
-                    self.isActivelyListening = false // Update our state
-                    if !self.currentInput.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        print("ViewModel: Recording stopped, sending prompt.")
-                        self.sendCurrentPrompt()
-                    }
-                } else if isRecording && !self.isListeningForHeyGwen {
-                    // If service starts recording and we are not in wake word mode, it means active listening for command.
-                    self.isActivelyListening = true
-                } else if !isRecording {
-                    // If service just stops recording for any other reason (e.g. wake word listening stopped without detection)
-                    self.isActivelyListening = false
-                }
+                self?.isActivelyListening = isRecording
             }
             .store(in: &cancellables)
 
-        // Note: The VoiceInputService currently doesn't have a general `errorOccurred` publisher.
-        // Error handling is done via console prints in the service.
-        // If specific errors need UI updates, that publisher should be added to the protocol and service.
-    }
-    
-    private func subscribeToAudioPlayback() {
-        // Example: If you need to react to playback state changes from the service
-        // For instance, if AudioPlaybackService had a @Published var isPlaying:
-        // audioPlaybackService.isPlayingPublisher // Assuming a publisher exists
-        //     .receive(on: DispatchQueue.main)
-        //     .sink { [weak self] playing in
-        //         // self.isGwenSpeaking = playing
-        //     }
-        //     .store(in: &cancellables)
+        voiceService.wakeWordDetectedPublisher
+            .sink { [weak self] detected in
+                if detected {
+                    self?.startActiveListening() // ✅ corrected here
+                }
+            }
+            .store(in: &cancellables)
     }
 
-    // MARK: - User Intents
     func requestVoicePermissions() {
-        voiceInputService.requestPermissions()
-        // Update hasPermissions based on callback or a delay, or re-check
-        // For simplicity, this is a one-shot request. UI should reflect actual status from SFSpeechRecognizer.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { // Simulate permission grant delay
-            self.checkPermissions()
+        SFSpeechRecognizer.requestAuthorization { authStatus in
+            DispatchQueue.main.async {
+                let micStatus = AVAudioSession.sharedInstance().recordPermission == .granted
+                self.hasPermissions = authStatus == .authorized && micStatus
+            }
         }
     }
-    
-    func startHeyGwenIfNeeded() { // New method for onAppear logic
-        if !isListeningForHeyGwen && hasPermissions {
-            voiceInputService.startListeningForWakeWord()
-        } else if !hasPermissions {
-            requestVoicePermissions()
+
+    func startActiveListening() {
+        guard hasPermissions else {
+            errorMessage = "Permissions missing"
+            return
         }
+        isActivelyListening = true
+        voiceService.startListening()
+    }
+
+    func stopActiveListening() {
+        isActivelyListening = false
+        voiceService.stopListening()
     }
 
     func toggleHeyGwenListening() {
-        if voiceInputService.isListeningForWakeWordValue { // Accessing underlying value for immediate check
-            voiceInputService.stopListeningForWakeWord()
+        isListeningForHeyGwen.toggle()
+        if isListeningForHeyGwen {
+            voiceService.startWakeWordDetection()
         } else {
-            guard hasPermissions else {
-                errorMessage = "Please grant speech and microphone permissions first."
-                requestVoicePermissions()
-                return
-            }
-            currentInput = "" // Clear any previous input
-            voiceInputService.startListeningForWakeWord()
+            voiceService.stopWakeWordDetection()
         }
     }
-    
-    func startActiveListening() { // Manual tap to listen for command
-        guard hasPermissions else {
-            errorMessage = "Please grant speech and microphone permissions first."
-            requestVoicePermissions()
-            return
+
+    func startHeyGwenIfNeeded() {
+        if isListeningForHeyGwen {
+            voiceService.startWakeWordDetection()
         }
-        if isListeningForHeyGwen { // If "Hey GWEN" was on, turn it off
-            voiceInputService.stopListeningForWakeWord()
-        }
-        currentInput = "" // Clear previous input
-        isActivelyListening = true // Set our state
-        voiceInputService.startRecording(forWakeWordDetection: false) // Start general recording
-    }
-    
-    func stopActiveListening() { // Manual tap to stop listening
-        voiceInputService.stopRecording() // Stop general recording
-        isActivelyListening = false // Update our state
-        // The isRecording publisher will handle sending the prompt if text exists.
     }
 
     func sendCurrentPrompt() {
-        let promptToSend = currentInput.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !promptToSend.isEmpty else { return }
+        let trimmed = currentInput.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        lastUserPrompt = trimmed
+        sendPromptToGwen(trimmed)
+        currentInput = ""
+    }
 
+    private func sendPromptToGwen(_ prompt: String) {
         isThinking = true
         errorMessage = nil
-        currentInput = "" // Clear input field
-
-        let userInteraction = GwenInteraction(userPrompt: promptToSend)
-        conversation.append(userInteraction)
-        let interactionIndex = conversation.count - 1
 
         Task {
             do {
-                let audioData = try await networkingService.sendGwenPrompt(prompt: "hey gwen " + promptToSend) // Prepend "hey gwen" as per backend expectation
-                
-                DispatchQueue.main.async {
-                    self.conversation[interactionIndex].audioData = audioData
-                    self.isThinking = false
-                    self.audioPlaybackService.playAudio(data: audioData)
+                let (audioData, responseText) = try await networkingService.sendGwenPrompt(prompt: prompt)
+
+                let interaction = GwenInteraction(
+                    userPrompt: prompt,
+                    gwenTranscript: responseText,
+                    audioData: audioData
+                )
+
+                conversation.append(interaction)
+                lastGwenResponse = responseText
+                isGwenSpeaking = true
+
+                if let audio = interaction.audioData {
+                    try await audioService.playAudio(data: audio)
                 }
             } catch {
-                DispatchQueue.main.async {
-                    self.isThinking = false
-                    if let networkError = error as? NetworkError {
-                        switch networkError {
-                        case .serverError(_, let message):
-                            self.errorMessage = message ?? "Server error occurred."
-                        default:
-                            self.errorMessage = "Network error: \(error.localizedDescription)"
-                        }
-                    } else {
-                        self.errorMessage = "Failed to send prompt: \(error.localizedDescription)"
-                    }
-                    // Update the interaction to show an error state if desired
-                }
+                self.errorMessage = "Failed to contact GWEN: \(error.localizedDescription)"
             }
+
+            self.isThinking = false
+            self.isGwenSpeaking = false
         }
     }
-    
-    func playAudio(for interactionId: UUID) {
-        if let interaction = conversation.first(where: { $0.id == interactionId }), let audioData = interaction.audioData {
-            audioPlaybackService.playAudio(data: audioData)
-        } else {
-            errorMessage = "Audio data not found for this interaction."
+
+    func playAudio(for interactionID: UUID) {
+        guard let interaction = conversation.first(where: { $0.id == interactionID }) else {
+            return
+        }
+
+        if let data = interaction.audioData {
+            Task {
+                try? await audioService.playAudio(data: data)
+            }
         }
     }
 }

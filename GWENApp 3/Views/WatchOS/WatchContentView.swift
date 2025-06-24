@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+
+
 struct WatchContentView: View {
     var body: some View {
         TabView {
@@ -75,18 +77,19 @@ struct WatchGwenChatView: View {
                         }
                     }
                 }
-                .onChange(of: viewModel.conversation.count) {
+                .onChange(of: viewModel.conversation) { _ in
                     if let lastInteraction = viewModel.conversation.last {
                         withAnimation {
                             scrollViewProxy.scrollTo(lastInteraction.id, anchor: .bottom)
                         }
                     }
                 }
+
             }
             .frame(minHeight: 50) // Ensure it takes some space
 
             Spacer()
-
+            
             // "Hey GWEN" Toggle / Listening Button
             Button(action: {
                 if viewModel.isActivelyListening { // If actively listening to a command (after "Hey GWEN" or tap)
@@ -103,7 +106,7 @@ struct WatchGwenChatView: View {
             }
             .clipShape(Circle()) // Make button circular
             .padding(.bottom, 5)
-
+            
             if viewModel.isThinking {
                 ProgressView()
                     .scaleEffect(0.8)
@@ -141,7 +144,7 @@ struct WatchGwenChatView: View {
         }
         return "mic.slash.fill" // Default: "Hey GWEN" is off
     }
-
+    
     private var buttonColor: Color {
         if viewModel.isActivelyListening && !viewModel.isListeningForHeyGwen {
             return .red // Stop button
@@ -195,9 +198,9 @@ struct WatchTimeCapsuleView: View {
                     .onDelete(perform: viewModel.deleteTimeCapsule)
                 }
             }
-
+            
             Spacer()
-
+            
             Button {
                 viewModel.newCapsuleNote = ""
                 viewModel.newCapsuleOpenDate = Date().addingTimeInterval(60*60*24) // Reset default
@@ -249,12 +252,12 @@ struct AddWatchTimeCapsuleView: View {
             VStack(spacing: 12) {
                 Text("New Time Capsule")
                     .font(.headline)
-
+                
                 TextField("Capsule Note", text: $viewModel.newCapsuleNote)
-
+                
                 Text("Open Date:")
                     .font(.caption)
-
+                
                 if showingCustomDatePicker {
                     DatePicker(
                         "", // No label needed here
@@ -287,17 +290,17 @@ struct AddWatchTimeCapsuleView: View {
                         }
                     }
                 }
-
+                
                 Button("Save Capsule") {
                     viewModel.addTimeCapsule()
                 }
                 .disabled(viewModel.newCapsuleNote.isEmpty || viewModel.isLoading)
                 .buttonStyle(.borderedProminent) // Make it stand out
-
+                
                 if viewModel.isLoading {
                     ProgressView()
                 }
-
+                
                 if let error = viewModel.errorMessage {
                     Text(error)
                         .font(.caption)
@@ -319,6 +322,7 @@ struct AddWatchTimeCapsuleView: View {
             if success {
                 dismiss()
                 WKInterfaceDevice.current().play(.success)
+
             }
         }
     }
@@ -352,7 +356,7 @@ struct WatchRemindersView: View {
                             // No onDelete for triggered reminders as they are notifications
                         }
                     }
-
+                    
                     Section(header: Text("Active Reminders")) {
                         ForEach(viewModel.reminders) { reminder in
                             reminderRow(reminder: reminder)
@@ -361,9 +365,9 @@ struct WatchRemindersView: View {
                     }
                 }
             }
-
+            
             Spacer()
-
+            
             Button {
                 newReminderText = "" // Reset text field
                 showingAddReminderSheet = true
@@ -381,7 +385,7 @@ struct WatchRemindersView: View {
             WatchAddReminderView(viewModel: viewModel, reminderText: $newReminderText)
         }
     }
-
+    
     @ViewBuilder
     private func reminderRow(reminder: LocationReminder, isTriggered: Bool = false) -> some View {
         VStack(alignment: .leading) {
@@ -406,9 +410,9 @@ struct WatchAddReminderView: View {
         VStack(spacing: 15) {
             Text("Remind me here...")
                 .font(.headline)
-
+            
             TextField("Note for reminder", text: $reminderText)
-
+            
             Button("Save Reminder") {
                 viewModel.addReminderHere(note: reminderText)
                 // The success/failure will be handled by observing viewModel.addReminderSuccess if needed,
@@ -416,11 +420,11 @@ struct WatchAddReminderView: View {
                 dismiss()
             }
             .disabled(reminderText.isEmpty || viewModel.isLoading)
-
+            
             if viewModel.isLoading {
                 ProgressView()
             }
-
+            
             if let error = viewModel.errorMessage {
                 Text(error)
                     .font(.caption)
@@ -487,7 +491,7 @@ struct WatchPlacesView: View {
                     }
                 }
             }
-
+            
             Spacer() // Pushes buttons to the bottom if list is short or empty
 
             // Search Activation / Category Buttons
@@ -500,7 +504,7 @@ struct WatchPlacesView: View {
                 .sheet(isPresented: $showingSearchInput) {
                     WatchPlacesSearchInputView(viewModel: viewModel)
                 }
-
+                
                 // Example of a category button
                 if !searchCategories.isEmpty {
                     Button(searchCategories[0].capitalized) {
@@ -534,9 +538,9 @@ struct WatchPlacesSearchInputView: View {
             Text("Search Places")
                 .font(.headline)
                 .padding(.bottom)
-
+            
             TextField("e.g., park, cafe", text: $localSearchText)
-
+            
             Button("Search") {
                 viewModel.searchQuery = localSearchText // Set it on the ViewModel
                 viewModel.searchPlaces() // ViewModel uses its own searchQuery
@@ -544,7 +548,7 @@ struct WatchPlacesSearchInputView: View {
             }
             .disabled(localSearchText.isEmpty)
             .padding(.top)
-
+            
             Button("Cancel") {
                 dismiss()
             }
@@ -586,10 +590,10 @@ struct WatchPlaceDetailView: View {
                     }
                     .font(.caption)
                 }
-
+                
                 // Add more details if available and relevant for watch
                 // e.g., Text("Types: \(place.types?.joined(separator: ", ") ?? "N/A")").font(.caption2)
-
+                
                 // "Open in Maps" on iPhone is complex. For now, just display info.
                 // A button could be added to trigger a specific action if defined.
                 // For instance, sending a notification to the phone to open this place.
@@ -605,4 +609,5 @@ struct WatchPlaceDetailView: View {
 #Preview {
     WatchContentView()
 }
+
 

@@ -1,6 +1,6 @@
 import Foundation
 import Combine // Still needed if any part of the app uses Combine interfaces from NetworkingService, though protocol is async
-@testable import GWENApp_3 // Replace GWENApp_3 with your actual app module name
+@testable import GWENApplicationXCODE // Replace GWENApp_3 with your actual app module name
 
 class MockNetworkingService: NetworkingServiceProtocol {
     // MARK: - Call Tracking
@@ -142,10 +142,11 @@ class MockNetworkingService: NetworkingServiceProtocol {
         guard let result = geocodeAddressResult else { throw NetworkError.unknown }
         return try result.get()
     }
-
+    
     func checkBackendHealth() async throws -> HealthCheckResponse {
         checkBackendHealthCalled = true
         guard let result = checkBackendHealthResult else { throw NetworkError.unknown }
         return try result.get()
     }
 }
+

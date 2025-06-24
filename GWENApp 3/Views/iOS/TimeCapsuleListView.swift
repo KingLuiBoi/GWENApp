@@ -24,7 +24,7 @@ struct TimeCapsuleListView: View {
                         .foregroundColor(.red)
                         .padding()
                 }
-
+                
                 if viewModel.timeCapsules.isEmpty && !viewModel.isLoading {
                     if let errorMessage = viewModel.errorMessage {
                         Text("Error: \(errorMessage)")
@@ -102,3 +102,4 @@ struct TimeCapsuleListView_Previews: PreviewProvider {
         TimeCapsuleListView()
     }
 }
+

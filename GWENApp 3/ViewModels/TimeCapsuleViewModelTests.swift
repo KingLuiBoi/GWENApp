@@ -1,6 +1,6 @@
 import XCTest
 import Combine
-@testable import GWENApp_3 // Replace with your app module name
+@testable import GWENApplicationXCODE // Replace with your app module name
 
 @MainActor
 class TimeCapsuleViewModelTests: XCTestCase {
@@ -39,11 +39,11 @@ class TimeCapsuleViewModelTests: XCTestCase {
             TimeCapsule(id: 1, note: "Capsule 1", timestamp: Date().timeIntervalSince1970 + 1000, created_at: Date().timeIntervalSince1970)
         ]
         mockNetworkingService.fetchTimeCapsulesResult = .success(mockCapsules)
-
+        
         let expectation = XCTestExpectation(description: "Fetch time capsules success")
-
+        
         viewModel.fetchTimeCapsules()
-
+        
         XCTAssertTrue(mockNetworkingService.fetchTimeCapsulesCalled)
         XCTAssertTrue(viewModel.isLoading)
 
@@ -56,17 +56,17 @@ class TimeCapsuleViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
 
     func testFetchTimeCapsules_Failure() {
         mockNetworkingService.fetchTimeCapsulesResult = .failure(NetworkError.serverError("Fetch failed"))
-
+        
         let expectation = XCTestExpectation(description: "Fetch time capsules failure")
-
+        
         viewModel.fetchTimeCapsules()
-
+        
         XCTAssertTrue(mockNetworkingService.fetchTimeCapsulesCalled)
         XCTAssertTrue(viewModel.isLoading)
 
@@ -79,7 +79,7 @@ class TimeCapsuleViewModelTests: XCTestCase {
                 expectation.fulfill()
             }
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
 
@@ -88,14 +88,14 @@ class TimeCapsuleViewModelTests: XCTestCase {
         viewModel.newCapsuleNote = "Future Note"
         let futureDate = Date().addingTimeInterval(10000) // Ensure it's in the future
         viewModel.newCapsuleOpenDate = futureDate
-
+        
         let createdCapsule = TimeCapsule(id: 2, note: "Future Note", timestamp: futureDate.timeIntervalSince1970, created_at: Date().timeIntervalSince1970)
         mockNetworkingService.createTimeCapsuleResult = .success(createdCapsule)
 
         let expectation = XCTestExpectation(description: "Add time capsule success")
-
+        
         viewModel.addTimeCapsule()
-
+        
         XCTAssertTrue(mockNetworkingService.createTimeCapsuleCalled)
         XCTAssertEqual(mockNetworkingService.lastTimeCapsuleNote, "Future Note")
         XCTAssertEqual(mockNetworkingService.lastTimeCapsuleTimestamp, futureDate.timeIntervalSince1970)
@@ -109,17 +109,17 @@ class TimeCapsuleViewModelTests: XCTestCase {
             XCTAssertNil(self.viewModel.errorMessage)
             expectation.fulfill()
         }.store(in: &cancellables)
-
+        
         wait(for: [expectation], timeout: 1.0)
     }
-
+    
     func testAddTimeCapsule_Failure() {
         viewModel.newCapsuleNote = "Test Fail Note"
         viewModel.newCapsuleOpenDate = Date().addingTimeInterval(1000)
         mockNetworkingService.createTimeCapsuleResult = .failure(NetworkError.serverError("Create failed"))
-
+        
         viewModel.addTimeCapsule()
-
+        
         let expectation = XCTestExpectation(description: "Add time capsule failure")
         viewModel.$errorMessage.dropFirst().sink { errorMsg in
             if errorMsg != nil {
@@ -140,39 +140,39 @@ class TimeCapsuleViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.errorMessage)
         XCTAssertEqual(viewModel.errorMessage, "Please enter a note for your time capsule.")
     }
-
+    
     func testAddTimeCapsule_DateInPast() {
         viewModel.newCapsuleNote = "Past Note"
         viewModel.newCapsuleOpenDate = Date().addingTimeInterval(-1000) // Date in the past
-
+        
         viewModel.addTimeCapsule()
-
+        
         XCTAssertFalse(mockNetworkingService.createTimeCapsuleCalled)
         XCTAssertNotNil(viewModel.errorMessage)
         XCTAssertEqual(viewModel.errorMessage, "The open date must be in the future.")
     }
-
+    
     // MARK: - Delete Time Capsule Tests
     func testDeleteTimeCapsule() {
         let capsule1 = TimeCapsule(id: 1, note: "Delete Me", timestamp: 0, created_at: 0)
         let capsule2 = TimeCapsule(id: 2, note: "Keep Me", timestamp: 0, created_at: 0)
         viewModel.timeCapsules = [capsule1, capsule2]
-
+        
         mockNetworkingService.deleteTimeCapsuleResult = .success(()) // Successful deletion
-
+        
         let expectation = XCTestExpectation(description: "Delete time capsule")
-
+        
         // Call delete on the first item
         viewModel.deleteTimeCapsule(at: IndexSet(integer: 0))
-
+        
         // Check that the correct method was called on the mock service
         XCTAssertTrue(mockNetworkingService.deleteTimeCapsuleCalled)
         XCTAssertEqual(mockNetworkingService.lastDeletedCapsuleID, 1)
-
+        
         // Check that the item was removed from the ViewModel's array
         XCTAssertEqual(viewModel.timeCapsules.count, 1)
         XCTAssertEqual(viewModel.timeCapsules.first?.id, 2)
-
+        
         // Simulate async completion of deletion if needed, or simply check state
         // For this mock, the deletion is synchronous on the array, async for backend call
         expectation.fulfill() // Fulfill immediately as local array is modified sync
@@ -180,3 +180,4 @@ class TimeCapsuleViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 }
+

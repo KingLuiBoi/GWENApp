@@ -9,7 +9,7 @@ class WatchTimeCapsuleViewModel: ObservableObject {
     @Published var timeCapsules: [TimeCapsule] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
-
+    
     // For creating a new capsule on watch
     @Published var newCapsuleNote: String = ""
     // For watchOS, DatePicker can be used. Defaulting to 1 day from now.
@@ -63,7 +63,7 @@ class WatchTimeCapsuleViewModel: ObservableObject {
                 )
                 self.timeCapsules.append(createdCapsule)
                 self.timeCapsules.sort(by: { $0.timestamp < $1.timestamp })
-
+                
                 self.newCapsuleNote = ""
                 self.newCapsuleOpenDate = Date().addingTimeInterval(60*60*24)
                 self.addCapsuleSuccess = true
@@ -96,3 +96,4 @@ class WatchTimeCapsuleViewModel: ObservableObject {
         }
     }
 }
+

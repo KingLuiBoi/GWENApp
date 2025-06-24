@@ -77,7 +77,7 @@ struct PlacesSearchView: View {
                         HStack {
                             Spacer()
                             Button(action: {
-                                if let location = viewModel.lastSearchedLocation ?? viewModel.locationService.currentLocation.value {
+                                if let location = viewModel.lastSearchedLocation ?? viewModel.locationService.currentLocationValue {
                                     viewModel.region = MKCoordinateRegion(
                                         center: location,
                                         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)

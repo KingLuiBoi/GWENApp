@@ -45,21 +45,17 @@ class LocationService: NSObject, ObservableObject, LocationServiceProtocol { // 
     func updateBackendWithLocation() {
         guard let location = currentLocation else { return }
         
-        NetworkingService.shared.updateUserLocation(
-            latitude: location.coordinate.latitude,
-            longitude: location.coordinate.longitude
-        )
-        .sink(
-            receiveCompletion: { completion in
-                if case .failure(let error) = completion {
-                    print("Failed to update location on backend: \(error)")
-                }
-            },
-            receiveValue: { response in
-                print("Location updated on backend. Nearby reminders: \(response.nearby_reminders.count)")
+        Task {
+            do {
+                let nearbyReminders = try await NetworkingService.shared.updateUserLocation(
+                    lat: location.coordinate.latitude,
+                    lon: location.coordinate.longitude
+                )
+                print("Location updated on backend. Nearby reminders: \(nearbyReminders.count)")
+            } catch {
+                print("Failed to update location on backend: \(error)")
             }
-        )
-        .store(in: &cancellables)
+        }
     }
 }
 

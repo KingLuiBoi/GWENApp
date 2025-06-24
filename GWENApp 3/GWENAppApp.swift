@@ -29,13 +29,3 @@ struct GWENAppApp: App {
     }
 }
 
-// ContentView will act as the root view, potentially holding a TabView for different sections.
-struct ContentView: View {
-    var body: some View {
-        // For now, let's directly show GwenChatView.
-        // Later, this can be replaced with a TabView to navigate to other features
-        // like Time Capsule, Reminders, Places as per the architecture.
-        GwenChatView()
-    }
-}
-

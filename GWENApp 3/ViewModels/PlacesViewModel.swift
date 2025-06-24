@@ -80,9 +80,9 @@ class PlacesViewModel: ObservableObject {
             return
         }
         
-        guard let coordinates = lastSearchedLocation ?? locationService.currentLocation.value else {
+        guard let coordinates = lastSearchedLocation ?? locationService.currentLocationValue else {
             errorMessage = "Could not determine your current location. Please ensure location services are enabled."
-            if locationService.authorizationStatus.value == .authorizedWhenInUse || locationService.authorizationStatus.value == .authorizedAlways {
+            if locationService.authorizationStatusValue == .authorizedWhenInUse || locationService.authorizationStatusValue == .authorizedAlways {
                 locationService.startUpdatingLocation()
             } else {
                 locationService.requestLocationPermissions()
@@ -179,7 +179,7 @@ class PlacesViewModel: ObservableObject {
     
     func getDirectionsToSelectedItem() {
         guard let selectedMapItem = selectedMapItem,
-              let userLocation = lastSearchedLocation ?? locationService.currentLocation.value else {
+              let userLocation = lastSearchedLocation ?? locationService.currentLocationValue else {
             errorMessage = "Cannot get directions. Make sure location services are enabled."
             return
         }
@@ -214,7 +214,7 @@ class PlacesViewModel: ObservableObject {
     
     func requestLocationAccessIfNeeded() {
         locationService.requestLocationPermissions()
-        if locationService.authorizationStatus.value == .authorizedWhenInUse || locationService.authorizationStatus.value == .authorizedAlways {
+        if locationService.authorizationStatusValue == .authorizedWhenInUse || locationService.authorizationStatusValue == .authorizedAlways {
             locationService.startUpdatingLocation()
         }
     }

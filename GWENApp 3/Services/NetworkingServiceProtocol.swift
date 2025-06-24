@@ -18,7 +18,7 @@ enum NetworkError: Error {
 protocol NetworkingServiceProtocol {
     // GWEN Chat
     // The original sendGwenPrompt returns a publisher. For async/await, it would be:
-    func sendGwenPrompt(prompt: String) async throws -> (Data, String) // (audioData, gwenTranscript)
+    func sendGwenPrompt(prompt: String) async throws -> Data // audioData only
 
     // Time Capsule
     func fetchTimeCapsules() async throws -> [TimeCapsule]

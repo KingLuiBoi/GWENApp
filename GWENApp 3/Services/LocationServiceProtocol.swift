@@ -49,8 +49,6 @@ extension LocationService: LocationServiceProtocol {
         return currentLocation?.coordinate // The @Published property's coordinate
     }
 
-    // Ensure method names in LocationService match if they differ from protocol
-    func requestLocationPermissions() { // Ensure this matches if actual method is requestPermission()
-        self.requestPermission() // Call the existing method
-    }
+    // The method already exists in LocationService with the correct name
+    // No need to add a wrapper method
 }

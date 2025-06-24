@@ -23,7 +23,7 @@ class NetworkingService: NetworkingServiceProtocol { // Added conformance
 
 extension NetworkingService {
     // GWEN Chat
-    func sendGwenPrompt(prompt: String) async throws -> (Data, String) {
+    func sendGwenPrompt(prompt: String) async throws -> Data {
         guard let url = URL(string: "\(baseURL)/gwen") else {
             throw NetworkError.invalidURL
         }
@@ -46,8 +46,7 @@ extension NetworkingService {
                 throw NetworkError.serverError(errorMessage)
             }
 
-            let textResponse = httpResponse.value(forHTTPHeaderField: "X-GWEN-Response-Text") ?? ""
-            return (data, textResponse)
+            return data
         } catch let error as NetworkError {
             throw error
         } catch {

@@ -1,0 +1,764 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A6476E492DFE0A0C0003D0E8 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6476E482DFE09FB0003D0E8 /* AppConfig.swift */; };
+		A6476E4B2DFE0A260003D0E8 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6476E4A2DFE0A1A0003D0E8 /* AppState.swift */; };
+		A6476E4D2DFE0A610003D0E8 /* GwenInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6476E4C2DFE0A2F0003D0E8 /* GwenInteraction.swift */; };
+		A6476E4F2DFE0AC20003D0E8 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6476E4E2DFE0A750003D0E8 /* OnboardingView.swift */; };
+		A6476E512DFE0B1F0003D0E8 /* PlacesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6476E502DFE0B0B0003D0E8 /* PlacesView.swift */; };
+		A6A4385E2DFA4DD90081C975 /* AudioPlaybackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4383F2DFA4DD90081C975 /* AudioPlaybackService.swift */; };
+		A6A4385F2DFA4DD90081C975 /* GwenChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4384F2DFA4DD90081C975 /* GwenChatView.swift */; };
+		A6A438602DFA4DD90081C975 /* GwenChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438452DFA4DD90081C975 /* GwenChatViewModel.swift */; };
+		A6A438612DFA4DD90081C975 /* TimeCapsuleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438482DFA4DD90081C975 /* TimeCapsuleViewModel.swift */; };
+		A6A438622DFA4DD90081C975 /* WatchRemindersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4384B2DFA4DD90081C975 /* WatchRemindersViewModel.swift */; };
+		A6A438632DFA4DD90081C975 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438402DFA4DD90081C975 /* LocationService.swift */; };
+		A6A438662DFA4DD90081C975 /* MapKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438412DFA4DD90081C975 /* MapKitService.swift */; };
+		A6A438672DFA4DD90081C975 /* WatchContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438552DFA4DD90081C975 /* WatchContentView.swift */; };
+		A6A438682DFA4DD90081C975 /* PlacesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438462DFA4DD90081C975 /* PlacesViewModel.swift */; };
+		A6A438692DFA4DD90081C975 /* WatchTimeCapsuleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4384C2DFA4DD90081C975 /* WatchTimeCapsuleViewModel.swift */; };
+		A6A4386A2DFA4DD90081C975 /* RemindersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438472DFA4DD90081C975 /* RemindersViewModel.swift */; };
+		A6A4386C2DFA4DD90081C975 /* VoiceInputService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438432DFA4DD90081C975 /* VoiceInputService.swift */; };
+		A6A4386F2DFA4DD90081C975 /* GWENAppWatchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438542DFA4DD90081C975 /* GWENAppWatchOSApp.swift */; };
+		A6A438702DFA4DD90081C975 /* RemindersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438512DFA4DD90081C975 /* RemindersListView.swift */; };
+		A6A438712DFA4DD90081C975 /* NetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438422DFA4DD90081C975 /* NetworkingService.swift */; };
+		A6A438722DFA4DD90081C975 /* WatchGwenChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438492DFA4DD90081C975 /* WatchGwenChatViewModel.swift */; };
+		A6A438742DFA4DD90081C975 /* DataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4383D2DFA4DD90081C975 /* DataModels.swift */; };
+		A6A438752DFA4DD90081C975 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4384E2DFA4DD90081C975 /* ContentView.swift */; };
+		A6A438762DFA4DD90081C975 /* TimeCapsuleListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438522DFA4DD90081C975 /* TimeCapsuleListView.swift */; };
+		A6A438772DFA4DD90081C975 /* WatchPlacesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4384A2DFA4DD90081C975 /* WatchPlacesViewModel.swift */; };
+		A6A4388D2DFA5B0E0081C975 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4388C2DFA5B000081C975 /* NetworkError.swift */; };
+		A6A438912DFA5BED0081C975 /* AudioPlaybackServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438902DFA5BCE0081C975 /* AudioPlaybackServiceProtocol.swift */; };
+		A6A438932DFA5CCC0081C975 /* LocationServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438922DFA5CB70081C975 /* LocationServiceProtocol.swift */; };
+		A6A438952DFA5D3B0081C975 /* MapKitServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438942DFA5D050081C975 /* MapKitServiceProtocol.swift */; };
+		A6A438972DFA6B820081C975 /* NetworkingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438962DFA6B6C0081C975 /* NetworkingServiceProtocol.swift */; };
+		A6A438992DFA6BC80081C975 /* VoiceInputServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438982DFA6BB30081C975 /* VoiceInputServiceProtocol.swift */; };
+		A6A4389B2DFA6BF70081C975 /* MockAudioPlaybackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4389A2DFA6BEB0081C975 /* MockAudioPlaybackService.swift */; };
+		A6A4389D2DFA6C2C0081C975 /* MockLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4389C2DFA6C150081C975 /* MockLocationService.swift */; };
+		A6A4389F2DFA6C470081C975 /* MockMapKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4389E2DFA6C3D0081C975 /* MockMapKitService.swift */; };
+		A6A438A12DFA6C6B0081C975 /* MockNetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438A02DFA6C5F0081C975 /* MockNetworkingService.swift */; };
+		A6A438A32DFA6C910081C975 /* MockVoiceInputService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438A22DFA6C840081C975 /* MockVoiceInputService.swift */; };
+		A6A438B12DFA6F230081C975 /* AddTimeCapsuleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438B02DFA6F180081C975 /* AddTimeCapsuleView.swift */; };
+		A6A438B22DFA761A0081C975 /* RemindersViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438AA2DFA6D570081C975 /* RemindersViewModelTests.swift */; };
+		A6A438B32DFA76B80081C975 /* TimeCapsuleViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438AC2DFA6D730081C975 /* TimeCapsuleViewModelTests.swift */; };
+		A6A438B42DFA77320081C975 /* NetworkingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438A42DFA6CCA0081C975 /* NetworkingServiceTests.swift */; };
+		A6A438B52DFA775B0081C975 /* PlacesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438A82DFA6D330081C975 /* PlacesViewModelTests.swift */; };
+		A6A438B62DFA777A0081C975 /* GwenChatViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438A62DFA6D120081C975 /* GwenChatViewModelTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A6A438212DFA46710081C975 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A6A4380B2DFA466D0081C975 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A6A438122DFA466D0081C975;
+			remoteInfo = GWENApplicationXCODE;
+		};
+		A6A4382B2DFA46710081C975 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A6A4380B2DFA466D0081C975 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A6A438122DFA466D0081C975;
+			remoteInfo = GWENApplicationXCODE;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		A6476E482DFE09FB0003D0E8 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		A6476E4A2DFE0A1A0003D0E8 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		A6476E4C2DFE0A2F0003D0E8 /* GwenInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GwenInteraction.swift; sourceTree = "<group>"; };
+		A6476E4E2DFE0A750003D0E8 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		A6476E502DFE0B0B0003D0E8 /* PlacesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesView.swift; sourceTree = "<group>"; };
+		A6A438132DFA466D0081C975 /* GWENApplicationXCODE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GWENApplicationXCODE.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6A438202DFA46710081C975 /* GWENApplicationXCODETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GWENApplicationXCODETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6A4382A2DFA46710081C975 /* GWENApplicationXCODEUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GWENApplicationXCODEUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A6A4383D2DFA4DD90081C975 /* DataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModels.swift; sourceTree = "<group>"; };
+		A6A4383F2DFA4DD90081C975 /* AudioPlaybackService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlaybackService.swift; sourceTree = "<group>"; };
+		A6A438402DFA4DD90081C975 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		A6A438412DFA4DD90081C975 /* MapKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitService.swift; sourceTree = "<group>"; };
+		A6A438422DFA4DD90081C975 /* NetworkingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingService.swift; sourceTree = "<group>"; };
+		A6A438432DFA4DD90081C975 /* VoiceInputService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceInputService.swift; sourceTree = "<group>"; };
+		A6A438452DFA4DD90081C975 /* GwenChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GwenChatViewModel.swift; sourceTree = "<group>"; };
+		A6A438462DFA4DD90081C975 /* PlacesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesViewModel.swift; sourceTree = "<group>"; };
+		A6A438472DFA4DD90081C975 /* RemindersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersViewModel.swift; sourceTree = "<group>"; };
+		A6A438482DFA4DD90081C975 /* TimeCapsuleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeCapsuleViewModel.swift; sourceTree = "<group>"; };
+		A6A438492DFA4DD90081C975 /* WatchGwenChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchGwenChatViewModel.swift; sourceTree = "<group>"; };
+		A6A4384A2DFA4DD90081C975 /* WatchPlacesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPlacesViewModel.swift; sourceTree = "<group>"; };
+		A6A4384B2DFA4DD90081C975 /* WatchRemindersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchRemindersViewModel.swift; sourceTree = "<group>"; };
+		A6A4384C2DFA4DD90081C975 /* WatchTimeCapsuleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTimeCapsuleViewModel.swift; sourceTree = "<group>"; };
+		A6A4384E2DFA4DD90081C975 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A6A4384F2DFA4DD90081C975 /* GwenChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GwenChatView.swift; sourceTree = "<group>"; };
+		A6A438512DFA4DD90081C975 /* RemindersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersListView.swift; sourceTree = "<group>"; };
+		A6A438522DFA4DD90081C975 /* TimeCapsuleListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeCapsuleListView.swift; sourceTree = "<group>"; };
+		A6A438542DFA4DD90081C975 /* GWENAppWatchOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GWENAppWatchOSApp.swift; sourceTree = "<group>"; };
+		A6A438552DFA4DD90081C975 /* WatchContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchContentView.swift; sourceTree = "<group>"; };
+		A6A4388C2DFA5B000081C975 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
+		A6A438902DFA5BCE0081C975 /* AudioPlaybackServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlaybackServiceProtocol.swift; sourceTree = "<group>"; };
+		A6A438922DFA5CB70081C975 /* LocationServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationServiceProtocol.swift; sourceTree = "<group>"; };
+		A6A438942DFA5D050081C975 /* MapKitServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapKitServiceProtocol.swift; sourceTree = "<group>"; };
+		A6A438962DFA6B6C0081C975 /* NetworkingServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingServiceProtocol.swift; sourceTree = "<group>"; };
+		A6A438982DFA6BB30081C975 /* VoiceInputServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceInputServiceProtocol.swift; sourceTree = "<group>"; };
+		A6A4389A2DFA6BEB0081C975 /* MockAudioPlaybackService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioPlaybackService.swift; sourceTree = "<group>"; };
+		A6A4389C2DFA6C150081C975 /* MockLocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationService.swift; sourceTree = "<group>"; };
+		A6A4389E2DFA6C3D0081C975 /* MockMapKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMapKitService.swift; sourceTree = "<group>"; };
+		A6A438A02DFA6C5F0081C975 /* MockNetworkingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockNetworkingService.swift; sourceTree = "<group>"; };
+		A6A438A22DFA6C840081C975 /* MockVoiceInputService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockVoiceInputService.swift; sourceTree = "<group>"; };
+		A6A438A42DFA6CCA0081C975 /* NetworkingServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingServiceTests.swift; sourceTree = "<group>"; };
+		A6A438A62DFA6D120081C975 /* GwenChatViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GwenChatViewModelTests.swift; sourceTree = "<group>"; };
+		A6A438A82DFA6D330081C975 /* PlacesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesViewModelTests.swift; sourceTree = "<group>"; };
+		A6A438AA2DFA6D570081C975 /* RemindersViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersViewModelTests.swift; sourceTree = "<group>"; };
+		A6A438AC2DFA6D730081C975 /* TimeCapsuleViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeCapsuleViewModelTests.swift; sourceTree = "<group>"; };
+		A6A438B02DFA6F180081C975 /* AddTimeCapsuleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTimeCapsuleView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A6476E642DFE41FF0003D0E8 /* Managers */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Managers;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A6A438102DFA466D0081C975 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A4381D2DFA46710081C975 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A438272DFA46710081C975 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A6A4380A2DFA466D0081C975 = {
+			isa = PBXGroup;
+			children = (
+				A6A4385D2DFA4DD90081C975 /* GWENApp 3 */,
+				A6A438142DFA466D0081C975 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A6A438142DFA466D0081C975 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A6A438132DFA466D0081C975 /* GWENApplicationXCODE.app */,
+				A6A438202DFA46710081C975 /* GWENApplicationXCODETests.xctest */,
+				A6A4382A2DFA46710081C975 /* GWENApplicationXCODEUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A6A4383E2DFA4DD90081C975 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A6476E4C2DFE0A2F0003D0E8 /* GwenInteraction.swift */,
+				A6476E4A2DFE0A1A0003D0E8 /* AppState.swift */,
+				A6476E482DFE09FB0003D0E8 /* AppConfig.swift */,
+				A6A4388C2DFA5B000081C975 /* NetworkError.swift */,
+				A6A4383D2DFA4DD90081C975 /* DataModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A6A438442DFA4DD90081C975 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A6A438A42DFA6CCA0081C975 /* NetworkingServiceTests.swift */,
+				A6A438A22DFA6C840081C975 /* MockVoiceInputService.swift */,
+				A6A438A02DFA6C5F0081C975 /* MockNetworkingService.swift */,
+				A6A4389E2DFA6C3D0081C975 /* MockMapKitService.swift */,
+				A6A4389C2DFA6C150081C975 /* MockLocationService.swift */,
+				A6A4389A2DFA6BEB0081C975 /* MockAudioPlaybackService.swift */,
+				A6A438982DFA6BB30081C975 /* VoiceInputServiceProtocol.swift */,
+				A6A438962DFA6B6C0081C975 /* NetworkingServiceProtocol.swift */,
+				A6A438942DFA5D050081C975 /* MapKitServiceProtocol.swift */,
+				A6A438922DFA5CB70081C975 /* LocationServiceProtocol.swift */,
+				A6A438902DFA5BCE0081C975 /* AudioPlaybackServiceProtocol.swift */,
+				A6A4383F2DFA4DD90081C975 /* AudioPlaybackService.swift */,
+				A6A438402DFA4DD90081C975 /* LocationService.swift */,
+				A6A438412DFA4DD90081C975 /* MapKitService.swift */,
+				A6A438422DFA4DD90081C975 /* NetworkingService.swift */,
+				A6A438432DFA4DD90081C975 /* VoiceInputService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A6A4384D2DFA4DD90081C975 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A6A438AC2DFA6D730081C975 /* TimeCapsuleViewModelTests.swift */,
+				A6A438AA2DFA6D570081C975 /* RemindersViewModelTests.swift */,
+				A6A438A82DFA6D330081C975 /* PlacesViewModelTests.swift */,
+				A6A438A62DFA6D120081C975 /* GwenChatViewModelTests.swift */,
+				A6A438452DFA4DD90081C975 /* GwenChatViewModel.swift */,
+				A6A438462DFA4DD90081C975 /* PlacesViewModel.swift */,
+				A6A438472DFA4DD90081C975 /* RemindersViewModel.swift */,
+				A6A438482DFA4DD90081C975 /* TimeCapsuleViewModel.swift */,
+				A6A438492DFA4DD90081C975 /* WatchGwenChatViewModel.swift */,
+				A6A4384A2DFA4DD90081C975 /* WatchPlacesViewModel.swift */,
+				A6A4384B2DFA4DD90081C975 /* WatchRemindersViewModel.swift */,
+				A6A4384C2DFA4DD90081C975 /* WatchTimeCapsuleViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A6A438532DFA4DD90081C975 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				A6476E502DFE0B0B0003D0E8 /* PlacesView.swift */,
+				A6476E4E2DFE0A750003D0E8 /* OnboardingView.swift */,
+				A6A438B02DFA6F180081C975 /* AddTimeCapsuleView.swift */,
+				A6A4384E2DFA4DD90081C975 /* ContentView.swift */,
+				A6A4384F2DFA4DD90081C975 /* GwenChatView.swift */,
+				A6A438512DFA4DD90081C975 /* RemindersListView.swift */,
+				A6A438522DFA4DD90081C975 /* TimeCapsuleListView.swift */,
+			);
+			path = iOS;
+			sourceTree = "<group>";
+		};
+		A6A4385A2DFA4DD90081C975 /* WatchOS */ = {
+			isa = PBXGroup;
+			children = (
+				A6A438542DFA4DD90081C975 /* GWENAppWatchOSApp.swift */,
+				A6A438552DFA4DD90081C975 /* WatchContentView.swift */,
+			);
+			path = WatchOS;
+			sourceTree = "<group>";
+		};
+		A6A4385B2DFA4DD90081C975 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A6A438532DFA4DD90081C975 /* iOS */,
+				A6A4385A2DFA4DD90081C975 /* WatchOS */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A6A4385D2DFA4DD90081C975 /* GWENApp 3 */ = {
+			isa = PBXGroup;
+			children = (
+				A6476E642DFE41FF0003D0E8 /* Managers */,
+				A6A4383E2DFA4DD90081C975 /* Models */,
+				A6A438442DFA4DD90081C975 /* Services */,
+				A6A4384D2DFA4DD90081C975 /* ViewModels */,
+				A6A4385B2DFA4DD90081C975 /* Views */,
+			);
+			path = "GWENApp 3";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A6A438122DFA466D0081C975 /* GWENApplicationXCODE */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6A438342DFA46710081C975 /* Build configuration list for PBXNativeTarget "GWENApplicationXCODE" */;
+			buildPhases = (
+				A6A4380F2DFA466D0081C975 /* Sources */,
+				A6A438102DFA466D0081C975 /* Frameworks */,
+				A6A438112DFA466D0081C975 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A6476E642DFE41FF0003D0E8 /* Managers */,
+			);
+			name = GWENApplicationXCODE;
+			packageProductDependencies = (
+			);
+			productName = GWENApplicationXCODE;
+			productReference = A6A438132DFA466D0081C975 /* GWENApplicationXCODE.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A6A4381F2DFA46710081C975 /* GWENApplicationXCODETests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6A438372DFA46710081C975 /* Build configuration list for PBXNativeTarget "GWENApplicationXCODETests" */;
+			buildPhases = (
+				A6A4381C2DFA46710081C975 /* Sources */,
+				A6A4381D2DFA46710081C975 /* Frameworks */,
+				A6A4381E2DFA46710081C975 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A6A438222DFA46710081C975 /* PBXTargetDependency */,
+			);
+			name = GWENApplicationXCODETests;
+			packageProductDependencies = (
+			);
+			productName = GWENApplicationXCODETests;
+			productReference = A6A438202DFA46710081C975 /* GWENApplicationXCODETests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A6A438292DFA46710081C975 /* GWENApplicationXCODEUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A6A4383A2DFA46710081C975 /* Build configuration list for PBXNativeTarget "GWENApplicationXCODEUITests" */;
+			buildPhases = (
+				A6A438262DFA46710081C975 /* Sources */,
+				A6A438272DFA46710081C975 /* Frameworks */,
+				A6A438282DFA46710081C975 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A6A4382C2DFA46710081C975 /* PBXTargetDependency */,
+			);
+			name = GWENApplicationXCODEUITests;
+			packageProductDependencies = (
+			);
+			productName = GWENApplicationXCODEUITests;
+			productReference = A6A4382A2DFA46710081C975 /* GWENApplicationXCODEUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A6A4380B2DFA466D0081C975 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					A6A438122DFA466D0081C975 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					A6A4381F2DFA46710081C975 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = A6A438122DFA466D0081C975;
+					};
+					A6A438292DFA46710081C975 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = A6A438122DFA466D0081C975;
+					};
+				};
+			};
+			buildConfigurationList = A6A4380E2DFA466D0081C975 /* Build configuration list for PBXProject "GWENApplicationXCODE" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A6A4380A2DFA466D0081C975;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A6A438142DFA466D0081C975 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A6A438122DFA466D0081C975 /* GWENApplicationXCODE */,
+				A6A4381F2DFA46710081C975 /* GWENApplicationXCODETests */,
+				A6A438292DFA46710081C975 /* GWENApplicationXCODEUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A6A438112DFA466D0081C975 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A4381E2DFA46710081C975 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A438282DFA46710081C975 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A6A4380F2DFA466D0081C975 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6A4385E2DFA4DD90081C975 /* AudioPlaybackService.swift in Sources */,
+				A6476E4D2DFE0A610003D0E8 /* GwenInteraction.swift in Sources */,
+				A6A4385F2DFA4DD90081C975 /* GwenChatView.swift in Sources */,
+				A6A438602DFA4DD90081C975 /* GwenChatViewModel.swift in Sources */,
+				A6A438992DFA6BC80081C975 /* VoiceInputServiceProtocol.swift in Sources */,
+				A6A4389F2DFA6C470081C975 /* MockMapKitService.swift in Sources */,
+				A6A438A12DFA6C6B0081C975 /* MockNetworkingService.swift in Sources */,
+				A6A438612DFA4DD90081C975 /* TimeCapsuleViewModel.swift in Sources */,
+				A6476E512DFE0B1F0003D0E8 /* PlacesView.swift in Sources */,
+				A6A438622DFA4DD90081C975 /* WatchRemindersViewModel.swift in Sources */,
+				A6A438632DFA4DD90081C975 /* LocationService.swift in Sources */,
+				A6A4388D2DFA5B0E0081C975 /* NetworkError.swift in Sources */,
+				A6A438662DFA4DD90081C975 /* MapKitService.swift in Sources */,
+				A6A438672DFA4DD90081C975 /* WatchContentView.swift in Sources */,
+				A6A438682DFA4DD90081C975 /* PlacesViewModel.swift in Sources */,
+				A6A438692DFA4DD90081C975 /* WatchTimeCapsuleViewModel.swift in Sources */,
+				A6A438952DFA5D3B0081C975 /* MapKitServiceProtocol.swift in Sources */,
+				A6476E4B2DFE0A260003D0E8 /* AppState.swift in Sources */,
+				A6A4386A2DFA4DD90081C975 /* RemindersViewModel.swift in Sources */,
+				A6A4389D2DFA6C2C0081C975 /* MockLocationService.swift in Sources */,
+				A6A4386C2DFA4DD90081C975 /* VoiceInputService.swift in Sources */,
+				A6A438B12DFA6F230081C975 /* AddTimeCapsuleView.swift in Sources */,
+				A6A4386F2DFA4DD90081C975 /* GWENAppWatchOSApp.swift in Sources */,
+				A6A438702DFA4DD90081C975 /* RemindersListView.swift in Sources */,
+				A6A438712DFA4DD90081C975 /* NetworkingService.swift in Sources */,
+				A6A438722DFA4DD90081C975 /* WatchGwenChatViewModel.swift in Sources */,
+				A6476E4F2DFE0AC20003D0E8 /* OnboardingView.swift in Sources */,
+				A6A438A32DFA6C910081C975 /* MockVoiceInputService.swift in Sources */,
+				A6A4389B2DFA6BF70081C975 /* MockAudioPlaybackService.swift in Sources */,
+				A6A438742DFA4DD90081C975 /* DataModels.swift in Sources */,
+				A6476E492DFE0A0C0003D0E8 /* AppConfig.swift in Sources */,
+				A6A438752DFA4DD90081C975 /* ContentView.swift in Sources */,
+				A6A438912DFA5BED0081C975 /* AudioPlaybackServiceProtocol.swift in Sources */,
+				A6A438972DFA6B820081C975 /* NetworkingServiceProtocol.swift in Sources */,
+				A6A438762DFA4DD90081C975 /* TimeCapsuleListView.swift in Sources */,
+				A6A438932DFA5CCC0081C975 /* LocationServiceProtocol.swift in Sources */,
+				A6A438772DFA4DD90081C975 /* WatchPlacesViewModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A4381C2DFA46710081C975 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A6A438B52DFA775B0081C975 /* PlacesViewModelTests.swift in Sources */,
+				A6A438B22DFA761A0081C975 /* RemindersViewModelTests.swift in Sources */,
+				A6A438B62DFA777A0081C975 /* GwenChatViewModelTests.swift in Sources */,
+				A6A438B42DFA77320081C975 /* NetworkingServiceTests.swift in Sources */,
+				A6A438B32DFA76B80081C975 /* TimeCapsuleViewModelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6A438262DFA46710081C975 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A6A438222DFA46710081C975 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A6A438122DFA466D0081C975 /* GWENApplicationXCODE */;
+			targetProxy = A6A438212DFA46710081C975 /* PBXContainerItemProxy */;
+		};
+		A6A4382C2DFA46710081C975 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A6A438122DFA466D0081C975 /* GWENApplicationXCODE */;
+			targetProxy = A6A4382B2DFA46710081C975 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A6A438322DFA46710081C975 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A6A438332DFA46710081C975 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A6A438352DFA46710081C975 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = LUI.GWENApplicationXCODE;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A6A438362DFA46710081C975 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = LUI.GWENApplicationXCODE;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		A6A438382DFA46710081C975 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = LUI.GWENApplicationXCODETests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GWENApplicationXCODE.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GWENApplicationXCODE";
+			};
+			name = Debug;
+		};
+		A6A438392DFA46710081C975 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = LUI.GWENApplicationXCODETests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GWENApplicationXCODE.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GWENApplicationXCODE";
+			};
+			name = Release;
+		};
+		A6A4383B2DFA46710081C975 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = LUI.GWENApplicationXCODEUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = GWENApplicationXCODE;
+			};
+			name = Debug;
+		};
+		A6A4383C2DFA46710081C975 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = LUI.GWENApplicationXCODEUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = GWENApplicationXCODE;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A6A4380E2DFA466D0081C975 /* Build configuration list for PBXProject "GWENApplicationXCODE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6A438322DFA46710081C975 /* Debug */,
+				A6A438332DFA46710081C975 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A6A438342DFA46710081C975 /* Build configuration list for PBXNativeTarget "GWENApplicationXCODE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6A438352DFA46710081C975 /* Debug */,
+				A6A438362DFA46710081C975 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A6A438372DFA46710081C975 /* Build configuration list for PBXNativeTarget "GWENApplicationXCODETests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6A438382DFA46710081C975 /* Debug */,
+				A6A438392DFA46710081C975 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A6A4383A2DFA46710081C975 /* Build configuration list for PBXNativeTarget "GWENApplicationXCODEUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A6A4383B2DFA46710081C975 /* Debug */,
+				A6A4383C2DFA46710081C975 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A6A4380B2DFA466D0081C975 /* Project object */;
+}

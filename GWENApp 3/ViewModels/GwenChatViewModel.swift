@@ -8,6 +8,8 @@
 import Foundation
 import Combine
 import SwiftUI // For Color, etc. if used in displayable items
+import Speech
+import AVFoundation
 
 class GwenChatViewModel: ObservableObject {
     // MARK: - Published Properties
@@ -194,15 +196,8 @@ class GwenChatViewModel: ObservableObject {
             do {
                 let audioData = try await networkingService.sendGwenPrompt(prompt: "hey gwen " + promptToSend) // Prepend "hey gwen" as per backend expectation
                 
-                // In a real scenario, the backend might also return the transcript.
-                // For now, we assume the prompt itself is the user side of transcript.
-                // And GWEN's response is primarily audio.
-                // If backend provides transcript, update here.
-                
                 DispatchQueue.main.async {
                     self.conversation[interactionIndex].audioData = audioData
-                    // For now, let's assume the backend doesn't send back its own transcript of its speech.
-                    // If it did, we would update: self.conversation[interactionIndex].gwenTranscript = backendTranscript
                     self.isThinking = false
                     self.audioPlaybackService.playAudio(data: audioData)
                 }

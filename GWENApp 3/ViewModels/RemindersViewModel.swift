@@ -169,9 +169,9 @@ class RemindersViewModel: ObservableObject {
             return
         }
         
-        guard let coordinates = locationService.currentLocation.value else {
+        guard let coordinates = locationService.currentLocationValue else {
             errorMessage = "Could not determine your current location. Please ensure location services are enabled."
-            if locationService.authorizationStatus.value == .authorizedWhenInUse || locationService.authorizationStatus.value == .authorizedAlways {
+            if locationService.authorizationStatusValue == .authorizedWhenInUse || locationService.authorizationStatusValue == .authorizedAlways {
                 locationService.startUpdatingLocation()
             } else {
                 locationService.requestLocationPermissions()

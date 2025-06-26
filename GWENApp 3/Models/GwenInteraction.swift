@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct GwenInteraction: Identifiable, Codable {
+struct GwenInteraction: Identifiable, Codable, Equatable {
     let id: UUID
     let userPrompt: String
     let gwenTranscript: String?

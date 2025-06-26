@@ -9,6 +9,10 @@ import SwiftUI
 import CoreLocation // For CLLocationCoordinate2D
 import MapKit // For Map view if we add it
 
+extension MKMapItem: Identifiable {
+    public var id: String { self.placemark.coordinate.latitude.description + "," + self.placemark.coordinate.longitude.description + (self.name ?? "") }
+}
+
 struct RemindersListView: View {
     @StateObject private var viewModel = RemindersViewModel()
     @State private var showingAddSheet = false
@@ -16,73 +20,53 @@ struct RemindersListView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                // Display triggered reminders prominently if any
                 if !viewModel.triggeredReminders.isEmpty {
-                    Section(header: Text("Triggered Reminders!").font(.headline).foregroundColor(.orange)) {
-                        List(viewModel.triggeredReminders) { reminder in
-                            ReminderRow(reminder: reminder, isTriggered: true)
-                        }
-                        .frame(maxHeight: 200) // Limit height of triggered reminders list
-                    }
+                    TriggeredRemindersList(reminders: viewModel.triggeredReminders)
                 }
-                
-                if viewModel.isLoading && viewModel.reminders.isEmpty {
-                    ProgressView("Loading Reminders...")
-                } else if let errorMessage = viewModel.errorMessage {
-                    Text("Error: \(errorMessage)")
-                        .foregroundColor(.red)
-                        .padding()
-                    Button("Retry") {
-                        viewModel.fetchReminders()
-                    }
-                } else if viewModel.reminders.isEmpty {
-                    Text("No active location reminders. Tap + to add one!")
-                        .foregroundColor(.secondary)
-                        .padding()
-                } else {
-                    List {
-                        ForEach(viewModel.reminders) { reminder in
-                            ReminderRow(reminder: reminder)
-                        }
-                        .onDelete(perform: viewModel.deleteReminder) // Added swipe to delete
-                    }
-                }
+                MainRemindersList(reminders: viewModel.reminders)
+                AddReminderButtonSection(showingAddSheet: $showingAddSheet)
             }
-            .navigationTitle("Location Reminders")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        showingAddSheet = true
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                    }
-                }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    if viewModel.isLoading {
-                        ProgressView()
-                    } else {
-                        Button {
-                            viewModel.fetchReminders() // Manual refresh
-                        } label: {
-                            Image(systemName: "arrow.clockwise")
-                        }
-                    }
-                }
+            .navigationTitle("Reminders")
+        }
+    }
+}
+
+private struct TriggeredRemindersList: View {
+    let reminders: [LocationReminder]
+    var body: some View {
+        Section(header: Text("Triggered Reminders!").font(.headline).foregroundColor(.orange)) {
+            List(reminders) { reminder in
+                ReminderRow(reminder: reminder, isTriggered: true)
             }
-            .sheet(isPresented: $showingAddSheet) {
-                AddReminderView()
-                    .environmentObject(viewModel)
+            .frame(maxHeight: 200)
+        }
+    }
+}
+
+private struct MainRemindersList: View {
+    let reminders: [LocationReminder]
+    var body: some View {
+        Section(header: Text("All Reminders")) {
+            List(reminders) { reminder in
+                ReminderRow(reminder: reminder, isTriggered: false)
             }
-            .onAppear {
-                // Fetch reminders when the view appears
-                // Backend doesn_t currently have a GET /reminders/location endpoint
-                // So, fetchReminders() will print a warning and return an empty array.
-                // This UI is built assuming the endpoint could be added later.
-                if viewModel.reminders.isEmpty {
-                    viewModel.fetchReminders()
-                }
-                viewModel.requestLocationAccessIfNeeded()
-            }
+        }
+    }
+}
+
+private struct AddReminderButtonSection: View {
+    @Binding var showingAddSheet: Bool
+    var body: some View {
+        Button(action: {
+            showingAddSheet = true
+        }) {
+            Label("Add Reminder", systemImage: "plus")
+        }
+        .buttonStyle(.borderedProminent)
+        .padding()
+        .sheet(isPresented: $showingAddSheet) {
+            AddReminderView()
+                .environmentObject(RemindersViewModel())
         }
     }
 }
@@ -217,84 +201,90 @@ struct LocationPickerView: View {
     @EnvironmentObject var viewModel: RemindersViewModel
     @Environment(\.dismiss) var dismiss
 
-    // No need for @State region if viewModel.region is used directly.
-    @State private var localSearchQuery: String = "" // Keep localSearchQuery for TextField binding
+    @State private var localSearchQuery: String = ""
 
     var body: some View {
         NavigationStack {
             VStack {
-                // Search bar for locations
-                HStack {
-                    TextField("Search for a place", text: $localSearchQuery, onCommit: {
-                        viewModel.searchQuery = localSearchQuery // Update viewModel's query
-                        viewModel.searchLocations() // Use existing VM method
-                    })
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    Button {
-                        viewModel.searchQuery = localSearchQuery
-                        viewModel.searchLocations()
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                    }
-                }
-                .padding()
-
-                // Map view
+                searchBar
                 ZStack(alignment: .bottom) {
-                    // Use viewModel.region, viewModel.searchResults
-                    Map(coordinateRegion: $viewModel.region, showsUserLocation: true, annotationItems: viewModel.searchResults) { item in
-                        MapAnnotation(coordinate: item.placemark.coordinate) {
-                            VStack { // Added VStack for better annotation appearance
-                                Image(systemName: "mappin.circle.fill")
-                                    .foregroundColor(.red)
-                                Text(item.name ?? "")
-                                    .font(.caption)
-                                    .fixedSize(horizontal: true, vertical: false) // Prevent text from causing excessive height
-                            }
-                            .onTapGesture {
-                                viewModel.selectMapItem(item) // Use existing VM method
-                                dismiss() // Dismiss after selection
-                            }
-                        }
+                    mapView
+                    if viewModel.isLoading {
+                        loadingView
                     }
-                    // onTapGesture for direct map tap is complex; "Confirm Map Center" is a good alternative.
-
-                    if viewModel.isLoading { // Use viewModel.isLoading
-                        ProgressView("Searching...")
-                            .padding()
-                            .background(Color.secondary.opacity(0.5)) // Updated background for better visibility
-                            .cornerRadius(10)
-                    }
-                    
-                    Button("Confirm Map Center") {
-                        let centerCoordinate = viewModel.region.center
-                        // Reverse geocode to get a place name
-                        let geocoder = CLGeocoder()
-                        geocoder.reverseGeocodeLocation(CLLocation(latitude: centerCoordinate.latitude, longitude: centerCoordinate.longitude)) { placemarks, error in
-                            let name = placemarks?.first?.name ?? placemarks?.first?.locality ?? "Selected Location"
-                            viewModel.selectLocation(centerCoordinate, placeName: name) // Use updated VM method
-                            dismiss()
-                        }
-                    }
-                    .padding()
-                    .buttonStyle(.borderedProminent) // Modern button style
-                    .padding(.bottom, 30)
+                    confirmButton
                 }
             }
             .navigationTitle("Select Location")
-            .toolbar { // Use .toolbar for modern NavigationBarItems
+            .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") { dismiss() }
                 }
             }
             .onAppear {
-                 // ViewModel's region should be up-to-date via its own location service subscription.
-                 // Clear previous search results and query.
-                 viewModel.searchResults = []
-                 viewModel.searchQuery = "" // Clear search query on appear
-                 localSearchQuery = ""   // Clear local search query too
+                viewModel.searchResults = []
+                viewModel.searchQuery = ""
+                localSearchQuery = ""
             }
         }
+    }
+
+    private var searchBar: some View {
+        HStack {
+            TextField("Search for a place", text: $localSearchQuery, onCommit: {
+                viewModel.searchQuery = localSearchQuery
+                viewModel.searchLocationsForPicker()
+            })
+            .textFieldStyle(RoundedBorderTextFieldStyle())
+            Button {
+                viewModel.searchQuery = localSearchQuery
+                viewModel.searchLocationsForPicker()
+            } label: {
+                Image(systemName: "magnifyingglass")
+            }
+        }
+        .padding()
+    }
+
+    private var mapView: some View {
+        Map(coordinateRegion: $viewModel.region, showsUserLocation: true, annotationItems: viewModel.searchResults) { item in
+            MapAnnotation(coordinate: item.placemark.coordinate) {
+                VStack {
+                    Image(systemName: "mappin.circle.fill")
+                        .foregroundColor(.red)
+                        .font(.title)
+                    Text(item.name ?? "")
+                        .font(.caption)
+                        .fixedSize(horizontal: true, vertical: false)
+                }
+                .onTapGesture {
+                    viewModel.selectMapItemForReminder(item)
+                    dismiss()
+                }
+            }
+        }
+    }
+
+    private var loadingView: some View {
+        ProgressView("Searching...")
+            .padding()
+            .background(Color.secondary.opacity(0.5))
+            .cornerRadius(10)
+    }
+
+    private var confirmButton: some View {
+        Button("Confirm Map Center") {
+            let centerCoordinate = viewModel.region.center
+            let geocoder = CLGeocoder()
+            geocoder.reverseGeocodeLocation(CLLocation(latitude: centerCoordinate.latitude, longitude: centerCoordinate.longitude)) { placemarks, error in
+                let name = placemarks?.first?.name ?? placemarks?.first?.locality ?? "Selected Location"
+                viewModel.selectCoordinatesForReminder(centerCoordinate, placeNameFromReverseGeocode: name)
+                dismiss()
+            }
+        }
+        .padding()
+        .buttonStyle(.borderedProminent)
+        .padding(.bottom, 30)
     }
 }
 

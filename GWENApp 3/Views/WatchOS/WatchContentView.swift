@@ -321,8 +321,9 @@ struct AddWatchTimeCapsuleView: View {
         .onChange(of: viewModel.addCapsuleSuccess) { success in
             if success {
                 dismiss()
+                #if os(watchOS)
                 WKInterfaceDevice.current().play(.success)
-
+                #endif
             }
         }
     }
@@ -447,7 +448,9 @@ struct WatchAddReminderView: View {
             if success {
                 dismiss()
                 // Optionally provide haptic feedback
+                #if os(watchOS)
                 WKInterfaceDevice.current().play(.success)
+                #endif
             }
         }
     }
@@ -482,8 +485,8 @@ struct WatchPlacesView: View {
                         VStack(alignment: .leading) {
                             Text(place.name)
                                 .font(.headline)
-                            if let vicinity = place.vicinity, !vicinity.isEmpty {
-                                Text(vicinity)
+                            if !place.vicinity.isEmpty {
+                                Text(place.vicinity)
                                     .font(.caption2)
                                     .foregroundColor(.gray)
                             }
@@ -569,10 +572,10 @@ struct WatchPlaceDetailView: View {
                     .font(.title3)
                     .padding(.bottom, 4)
 
-                if let vicinity = place.vicinity, !vicinity.isEmpty {
+                if !place.vicinity.isEmpty {
                     HStack {
                         Image(systemName: "mappin.and.ellipse")
-                        Text(vicinity)
+                        Text(place.vicinity)
                     }
                     .font(.caption)
                 }

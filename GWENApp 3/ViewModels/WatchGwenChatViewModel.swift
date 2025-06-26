@@ -7,24 +7,22 @@
 
 import Foundation
 import Combine
-import SwiftUI // For Color, etc. if used in displayable items
+import SwiftUI
 import Speech
 import AVFoundation
 
-// This ViewModel can be similar to GwenChatViewModel but might be simplified
-// or tailored for WatchOS specific interactions.
+@MainActor
 class WatchGwenChatViewModel: ObservableObject {
     // MARK: - Published Properties
-    // For WatchOS, we might only show the last interaction or a very short list.
     @Published var lastUserPrompt: String? = nil
-    @Published var lastGwenResponse: String? = nil // Transcript
-    @Published var isGwenSpeaking: Bool = false // To show some indicator
+    @Published var lastGwenResponse: String? = nil
+    @Published var isGwenSpeaking: Bool = false
     
-    @Published var currentInputText: String = "" // For text input if supported
+    @Published var currentInputText: String = ""
     @Published var isThinking: Bool = false
     @Published var errorMessage: String? = nil
     @Published var hasPermissions: Bool = false
-    @Published var isListeningForHeyGwen: Bool = false // Not ideal for watch battery, but for consistency
+    @Published var isListeningForHeyGwen: Bool = false
     @Published var isActivelyListening: Bool = false
 
     // MARK: - Services
@@ -49,7 +47,7 @@ class WatchGwenChatViewModel: ObservableObject {
     }
 
     private func checkPermissions() {
-        if SFSpeechRecognizer.authorizationStatus() == .authorized && AVAudioSession.sharedInstance().recordPermission == .granted {
+        if SFSpeechRecognizer.authorizationStatus() == .authorized && AVAudioApplication.shared.recordPermission == .granted {
             hasPermissions = true
         } else {
             hasPermissions = false
@@ -90,8 +88,7 @@ class WatchGwenChatViewModel: ObservableObject {
     }
     
     private func subscribeToAudioPlayback() {
-        // Assuming AudioPlaybackService has a @Published var isPlaying
-        AudioPlaybackService.shared.$isPlaying // Direct access for simplicity here
+        AudioPlaybackService.shared.$isPlaying
             .receive(on: DispatchQueue.main)
             .assign(to: \.isGwenSpeaking, on: self)
             .store(in: &cancellables)
@@ -100,12 +97,12 @@ class WatchGwenChatViewModel: ObservableObject {
     // MARK: - User Intents
     func requestVoicePermissions() {
         voiceInputService.requestPermissions()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { // Simulate permission grant delay
-            self.checkPermissions()
+        Task {
+            try? await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 seconds
+            checkPermissions()
         }
     }
     
-    // "Hey GWEN" might be too battery intensive for watch, consider tap-to-speak as primary
     func toggleHeyGwenListening() {
         if isListeningForHeyGwen {
             voiceInputService.stopWakeWordDetection()
@@ -126,7 +123,7 @@ class WatchGwenChatViewModel: ObservableObject {
             requestVoicePermissions()
             return
         }
-        currentInputText = "" // Clear previous input
+        currentInputText = ""
         lastUserPrompt = isHeyGwenTriggered ? "(Hey GWEN...)" : "(Listening...)"
         lastGwenResponse = nil
         voiceInputService.startListening()
@@ -134,7 +131,6 @@ class WatchGwenChatViewModel: ObservableObject {
     
     func stopActiveListening() {
         voiceInputService.stopListening()
-        // Prompt will be sent automatically by the sink if currentInputText is not empty
     }
 
     func sendPrompt(prompt: String) {
@@ -148,24 +144,17 @@ class WatchGwenChatViewModel: ObservableObject {
 
         Task {
             do {
-                // Prepend "hey gwen " if not already part of the prompt, as per backend expectation
                 let fullPrompt = promptToSend.lowercased().hasPrefix("hey gwen") ? promptToSend : "hey gwen " + promptToSend
-                let audioData = try await networkingService.sendGwenPrompt(prompt: fullPrompt)
+                let (audioData, transcript) = try await networkingService.sendGwenPrompt(prompt: fullPrompt)
                 
-                DispatchQueue.main.async {
-                    self.isThinking = false
-                    // For WatchOS, we might not get a full transcript back from this endpoint.
-                    // We can use the prompt as the user_s part and indicate GWEN is speaking.
-                    // If backend could provide a transcript, we_d use it for lastGwenResponse.
-                    self.lastGwenResponse = "(Playing GWEN's response)" // Placeholder
-                    try? await self.audioPlaybackService.playAudio(data: audioData)
-                }
+                isThinking = false
+                lastGwenResponse = transcript.isEmpty ? "(Playing GWEN's response)" : transcript
+                
+                try await audioPlaybackService.playAudio(data: audioData)
             } catch {
-                DispatchQueue.main.async {
-                    self.isThinking = false
-                    self.lastGwenResponse = "Error" 
-                    self.errorMessage = "Failed: \(error.localizedDescription)"
-                }
+                isThinking = false
+                lastGwenResponse = "Error" 
+                errorMessage = "Failed: \(error.localizedDescription)"
             }
         }
     }

@@ -30,6 +30,13 @@ class RemindersViewModel: NSObject, ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var currentLocation: CLLocationCoordinate2D?
 
+    var isLocationDenied: Bool {
+        if let locationService = locationService as? LocationService {
+            return locationService.authorizationStatus == .denied
+        }
+        return false
+    }
+
     init(
         networkingService: NetworkingServiceProtocol = NetworkingService.shared,
         locationService: LocationServiceProtocol = LocationService.shared,
@@ -196,8 +203,6 @@ class RemindersViewModel: NSObject, ObservableObject {
             )
             .store(in: &cancellables)
     }
-
-
 
     func selectMapItemForReminder(_ mapItem: MKMapItem) {
         selectedMapItem = mapItem

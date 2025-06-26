@@ -52,7 +52,7 @@ class GwenChatViewModel: ObservableObject {
         voiceService.wakeWordDetectedPublisher
             .sink { [weak self] detected in
                 if detected {
-                    self?.startActiveListening() // ✅ corrected here
+                    self?.startActiveListening()
                 }
             }
             .store(in: &cancellables)
@@ -60,8 +60,8 @@ class GwenChatViewModel: ObservableObject {
 
     func requestVoicePermissions() {
         SFSpeechRecognizer.requestAuthorization { authStatus in
-            DispatchQueue.main.async {
-                let micStatus = AVAudioSession.sharedInstance().recordPermission == .granted
+            Task { @MainActor in
+                let micStatus = AVAudioApplication.shared.recordPermission == .granted
                 self.hasPermissions = authStatus == .authorized && micStatus
             }
         }

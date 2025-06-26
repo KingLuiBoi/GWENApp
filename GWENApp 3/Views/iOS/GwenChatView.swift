@@ -12,7 +12,7 @@ struct GwenChatView: View {
     @FocusState private var isTextFieldFocused: Bool
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 0) {
                 // Conversation History
                 ScrollViewReader { scrollViewProxy in
@@ -25,7 +25,7 @@ struct GwenChatView: View {
                         }
                         .padding()
                     }
-                    .onChange(of: viewModel.conversation.count) {
+                    .onChange(of: viewModel.conversation.count) { _, _ in
                         // Auto-scroll to the bottom when new messages are added
                         if let lastInteraction = viewModel.conversation.last {
                             withAnimation {
@@ -88,7 +88,7 @@ struct GwenChatView: View {
                     }
                 }
                 .padding()
-                .background(.thinMaterial) // Adapts to light/dark mode
+                .background(.thinMaterial)
             }
             .navigationTitle("GWEN")
             .toolbar {
@@ -110,9 +110,8 @@ struct GwenChatView: View {
                 }
             }
             .onAppear {
-                // Request permissions when the view appears if not already granted
-                viewModel.requestVoicePermissions() // Ensures permissions are checked/requested early
-                viewModel.startHeyGwenIfNeeded() // Attempt to start "Hey GWEN" listening
+                viewModel.requestVoicePermissions()
+                viewModel.startHeyGwenIfNeeded()
             }
         }
     }
@@ -120,7 +119,7 @@ struct GwenChatView: View {
 
 struct ChatBubbleView: View {
     let interaction: GwenInteraction
-    @ObservedObject var viewModel: GwenChatViewModel // To call playAudio
+    @ObservedObject var viewModel: GwenChatViewModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -136,7 +135,6 @@ struct ChatBubbleView: View {
             .padding(.leading, 40)
 
             // GWEN Response (Transcript and Audio)
-            // For now, we don_t have a separate GWEN transcript from backend, so we just show a placeholder if audio exists
             if interaction.audioData != nil || interaction.gwenTranscript != nil {
                 HStack {
                     VStack(alignment: .leading) {

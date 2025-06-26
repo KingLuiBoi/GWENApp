@@ -13,7 +13,7 @@ struct TimeCapsuleListView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 if viewModel.isLoading && viewModel.timeCapsules.isEmpty {
                     ProgressView("Loading Time Capsules...")
@@ -44,9 +44,9 @@ struct TimeCapsuleListView: View {
                             VStack(alignment: .leading) {
                                 Text(capsule.note)
                                     .font(.headline)
-                                Text("Opens: \(capsule.targetDate, formatter: dateFormatter)") // Use targetDate (was openDate)
+                                Text("Opens: \(capsule.targetDate, formatter: dateFormatter)")
                                     .font(.subheadline)
-                                    .foregroundColor(capsule.targetDate > Date() ? .gray : .blue) // Highlight if openable
+                                    .foregroundColor(capsule.targetDate > Date() ? .gray : .blue)
                                 Text("Created: \(capsule.createdDate, style: .date)")
                                     .font(.caption)
                                     .foregroundColor(.gray)
@@ -60,7 +60,7 @@ struct TimeCapsuleListView: View {
             .navigationTitle("Time Capsules")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    if viewModel.isLoading && !viewModel.timeCapsules.isEmpty { // Show spinner only if loading more
+                    if viewModel.isLoading && !viewModel.timeCapsules.isEmpty {
                         ProgressView()
                     } else {
                         Button {
@@ -75,7 +75,7 @@ struct TimeCapsuleListView: View {
                     Button {
                         // Reset for new entry form
                         viewModel.newCapsuleNote = ""
-                        viewModel.newCapsuleOpenDate = Date().addingTimeInterval(60*60*24) // Default to 1 day from now
+                        viewModel.newCapsuleOpenDate = Date().addingTimeInterval(60*60*24)
                         viewModel.errorMessage = nil
                         viewModel.addCapsuleSuccess = false
                         showingAddSheet = true
@@ -86,10 +86,10 @@ struct TimeCapsuleListView: View {
             }
             .sheet(isPresented: $showingAddSheet) {
                 AddTimeCapsuleView()
-                    .environmentObject(viewModel) // Pass the viewModel to the sheet
+                    .environmentObject(viewModel)
             }
             .onAppear {
-                if viewModel.timeCapsules.isEmpty { // Fetch only if list is empty on first appear
+                if viewModel.timeCapsules.isEmpty {
                     viewModel.fetchTimeCapsules()
                 }
             }
@@ -97,9 +97,7 @@ struct TimeCapsuleListView: View {
     }
 }
 
-struct TimeCapsuleListView_Previews: PreviewProvider {
-    static var previews: some View {
-        TimeCapsuleListView()
-    }
+#Preview {
+    TimeCapsuleListView()
 }
 

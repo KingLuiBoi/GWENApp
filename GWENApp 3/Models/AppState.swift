@@ -4,6 +4,7 @@ import AVFoundation
 import Speech
 import CoreLocation
 
+@MainActor
 class AppState: ObservableObject {
     @Published var isFirstLaunch: Bool = false  // Set to false to skip onboarding for now
     @Published var hasCompletedOnboarding: Bool = true  // Set to true to skip onboarding for now
@@ -15,7 +16,7 @@ class AppState: ObservableObject {
     }
     
     private func checkPermissions() {
-        let micPermission = AVAudioSession.sharedInstance().recordPermission
+        let micPermission = AVAudioApplication.shared.recordPermission
         let speechPermission = SFSpeechRecognizer.authorizationStatus()
         let locationPermission = CLLocationManager().authorizationStatus
         

@@ -14,7 +14,7 @@ struct RemindersListView: View {
     @State private var showingAddSheet = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 // Display triggered reminders prominently if any
                 if !viewModel.triggeredReminders.isEmpty {
@@ -82,10 +82,6 @@ struct RemindersListView: View {
                     viewModel.fetchReminders()
                 }
                 viewModel.requestLocationAccessIfNeeded()
-                viewModel.startMonitoringLocation() // Start monitoring when view appears
-            }
-            .onDisappear {
-                // viewModel.stopMonitoringLocation() // Stop monitoring when view disappears, or manage based on app state
             }
         }
     }
@@ -124,10 +120,10 @@ struct ReminderRow: View {
 struct AddReminderView: View {
     @EnvironmentObject var viewModel: RemindersViewModel
     @Environment(\.dismiss) var dismiss
-    @State private var showingLocationPicker = false // To toggle the map picker sheet
+    @State private var showingLocationPicker = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 Section(header: Text("New Location Reminder")) {
                     TextField("Note (e.g., Buy milk)", text: $viewModel.newReminderNote)
@@ -135,12 +131,12 @@ struct AddReminderView: View {
                     HStack {
                         TextField("Place Name (e.g., Grocery Store)", text: $viewModel.newReminderPlace)
                         Button {
-                            viewModel.mapSearchResults = [] // Clear previous search results before showing picker
+                            viewModel.searchResults = []
                             showingLocationPicker = true
                         } label: {
                             Image(systemName: "map.fill")
                         }
-                        .disabled(viewModel.locationService.authorizationStatus == .denied)
+                        .disabled(viewModel.isLocationDenied)
                     }
                     
                     if let coords = viewModel.newReminderCoordinates {
@@ -159,7 +155,7 @@ struct AddReminderView: View {
 
                 Section {
                     Button(action: {
-                        viewModel.addReminder() // ViewModel should handle success and error, then UI updates
+                        viewModel.addReminder()
                     }) {
                         HStack {
                             Spacer()
@@ -190,18 +186,18 @@ struct AddReminderView: View {
                 }
             }
             .onAppear {
-                viewModel.errorMessage = nil // Clear previous errors
-                viewModel.addReminderSuccess = false // Reset success flag
+                viewModel.errorMessage = nil
+                viewModel.addReminderSuccess = false
             }
-            .onChange(of: viewModel.addReminderSuccess) { newValue in // Changed from oldValue, newValue to just newValue for clarity
-                if newValue { // If addReminder was successful
+            .onChange(of: viewModel.addReminderSuccess) { _, newValue in
+                if newValue {
                     dismiss()
-                    viewModel.addReminderSuccess = false // Reset the flag
+                    viewModel.addReminderSuccess = false
                 }
             }
             .sheet(isPresented: $showingLocationPicker) {
                 LocationPickerView()
-                    .environmentObject(viewModel) // Pass the ViewModel
+                    .environmentObject(viewModel)
             }
         }
     }
@@ -225,7 +221,7 @@ struct LocationPickerView: View {
     @State private var localSearchQuery: String = "" // Keep localSearchQuery for TextField binding
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 // Search bar for locations
                 HStack {

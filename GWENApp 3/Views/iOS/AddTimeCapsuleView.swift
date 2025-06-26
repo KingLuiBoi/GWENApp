@@ -5,27 +5,32 @@ struct AddTimeCapsuleView: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
-                Section(header: Text("New Time Capsule Note")) {
+                Section("New Time Capsule Note") {
                     TextEditor(text: $viewModel.newCapsuleNote)
-                        .frame(height: 200)
-                        .border(Color.gray.opacity(0.2), width: 1) // Optional: visual cue for TextEditor
+                        .frame(minHeight: 200)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.gray.opacity(0.3), lineWidth: 1)
+                        )
                 }
 
-                Section(header: Text("Open Date")) {
+                Section("Open Date") {
                     DatePicker(
                         "Select Date",
                         selection: $viewModel.newCapsuleOpenDate,
-                        in: Date()..., // Allow selection from today onwards
+                        in: Date()...,
                         displayedComponents: [.date, .hourAndMinute]
                     )
+                    .datePickerStyle(.compact)
                 }
                 
                 if let errorMessage = viewModel.errorMessage, !errorMessage.isEmpty {
                     Section {
                         Text(errorMessage)
                             .foregroundColor(.red)
+                            .font(.caption)
                     }
                 }
 
@@ -37,16 +42,20 @@ struct AddTimeCapsuleView: View {
                             Spacer()
                             if viewModel.isLoading {
                                 ProgressView()
+                                    .controlSize(.small)
                             } else {
                                 Text("Save Time Capsule")
+                                    .fontWeight(.medium)
                             }
                             Spacer()
                         }
                     }
                     .disabled(viewModel.isLoading || viewModel.newCapsuleNote.isEmpty)
+                    .buttonStyle(.borderedProminent)
                 }
             }
             .navigationTitle("Add Time Capsule")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
@@ -55,11 +64,10 @@ struct AddTimeCapsuleView: View {
                 }
             }
             .onAppear {
-                // Clear any previous error messages and reset success flag
                 viewModel.errorMessage = nil
                 viewModel.addCapsuleSuccess = false
             }
-            .onChange(of: viewModel.addCapsuleSuccess) { success in
+            .onChange(of: viewModel.addCapsuleSuccess) { _, success in
                 if success {
                     dismiss()
                 }
@@ -68,10 +76,8 @@ struct AddTimeCapsuleView: View {
     }
 }
 
-struct AddTimeCapsuleView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddTimeCapsuleView()
-            .environmentObject(TimeCapsuleViewModel()) // Provide a dummy ViewModel for preview
-    }
+#Preview {
+    AddTimeCapsuleView()
+        .environmentObject(TimeCapsuleViewModel())
 }
 

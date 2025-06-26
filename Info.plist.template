@@ -57,7 +57,7 @@
         <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
     
-    <!-- Required permissions for GWEN app -->
+    <!-- Privacy Usage Descriptions required by iOS -->
     <key>NSMicrophoneUsageDescription</key>
     <string>GWEN needs microphone access for voice commands and speech recognition.</string>
     <key>NSSpeechRecognitionUsageDescription</key>

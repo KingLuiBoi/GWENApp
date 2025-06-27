@@ -138,7 +138,7 @@ def gwen_response():
         # Get response from OpenAI using chat completions API
         try:
             response = client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4o-mini",
                 messages=[
                     {"role": "system", "content": "You are GWEN, a helpful AI assistant similar to Jarvis from Iron Man. You are concise, helpful, and slightly witty. You assist with day-to-day tasks, answer questions, and provide useful information. Keep responses under 150 words."},
                     {"role": "user", "content": prompt}

@@ -143,7 +143,7 @@ def create_gwen_assistant():
         assistant = client.beta.assistants.create(
             name="GWEN",
             instructions="You are GWEN, a helpful AI assistant similar to Jarvis from Iron Man. You are concise, helpful, and slightly witty. You assist with day-to-day tasks, answer questions, and provide useful information. Keep responses under 150 words.",
-            model="gpt-4o-mini",
+            model="gpt-3.5-turbo",
             tools=[]  # No tools for now, can add later
         )
         

@@ -33,7 +33,7 @@ if elevenlabs_api_key:
 
 # Simple rate limiter for OpenAI requests
 last_request_time = 0
-MIN_REQUEST_INTERVAL = 3  # Minimum seconds between requests
+MIN_REQUEST_INTERVAL = 10  # Minimum seconds between requests (increased from 3)
 
 # In-memory storage for time capsules, reminders, and user location
 time_capsules = []

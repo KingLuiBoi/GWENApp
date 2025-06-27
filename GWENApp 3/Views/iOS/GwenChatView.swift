@@ -96,7 +96,7 @@ struct GwenChatView: View {
                     Button(action: {
                         viewModel.toggleHeyGwenListening()
                     }) {
-                        Image(systemName: viewModel.isListeningForHeyGwen ? "ear.and_waveform" : "ear")
+                        Image(systemName: viewModel.isListeningForHeyGwen ? "waveform" : "ear")
                             .foregroundColor(viewModel.isListeningForHeyGwen ? .green : .gray)
                     }
                     .help(viewModel.isListeningForHeyGwen ? "Stop listening for \"Hey GWEN\"" : "Listen for \"Hey GWEN\"")

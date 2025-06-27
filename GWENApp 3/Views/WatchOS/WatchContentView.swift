@@ -140,7 +140,7 @@ struct WatchGwenChatView: View {
         if viewModel.isActivelyListening && !viewModel.isListeningForHeyGwen {
             return "stop.circle.fill" // To stop command recording (and send)
         } else if viewModel.isListeningForHeyGwen {
-            return "ear.and_waveform"
+            return "waveform"
         }
         return "mic.slash.fill" // Default: "Hey GWEN" is off
     }

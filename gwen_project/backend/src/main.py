@@ -17,9 +17,15 @@ app = Flask(__name__)
 CORS(app)
 
 # Configure API keys from environment variables
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+openai_api_key = os.environ.get("OPENAI_API_KEY")
 elevenlabs_api_key = os.environ.get("ELEVENLABS_API_KEY")
 gwen_voice_id = os.environ.get("GWEN_VOICE_ID")
+
+# Initialize OpenAI client with modern API
+if openai_api_key:
+    client = openai.OpenAI(api_key=openai_api_key)
+else:
+    client = None
 
 # Set ElevenLabs API key
 if elevenlabs_api_key:
@@ -114,26 +120,45 @@ def gwen_response():
         if not prompt:
             return jsonify({"error": "No prompt provided"}), 400
         
-        # Get response from OpenAI
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are GWEN, a helpful AI assistant similar to Jarvis from Iron Man. You are concise, helpful, and slightly witty. You assist with day-to-day tasks, answer questions, and provide useful information."},
-                {"role": "user", "content": prompt}
-            ]
-        )
+        if not client:
+            return jsonify({"error": "OpenAI API key not configured"}), 500
         
-        text_response = response.choices[0].message.content
+        # Get response from OpenAI using modern client
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": "You are GWEN, a helpful AI assistant similar to Jarvis from Iron Man. You are concise, helpful, and slightly witty. You assist with day-to-day tasks, answer questions, and provide useful information."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_tokens=150  # Limit tokens to reduce costs
+            )
+            
+            text_response = response.choices[0].message.content
+            
+        except openai.RateLimitError:
+            return jsonify({"error": "OpenAI rate limit exceeded. Please try again later or check your billing."}), 429
+        except openai.QuotaExceededError:
+            # Fallback response when quota is exceeded
+            text_response = "I'm sorry, but I'm currently experiencing high usage and can't process your request right now. Please try again later or check your OpenAI billing status. In the meantime, I can still help with basic tasks like setting reminders or finding places."
+            
+        except openai.AuthenticationError:
+            return jsonify({"error": "OpenAI authentication failed. Please check your API key."}), 401
+        except openai.APIError as e:
+            return jsonify({"error": f"OpenAI API error: {str(e)}"}), 500
         
         # Generate audio from text using ElevenLabs
         if not elevenlabs_api_key or not gwen_voice_id:
             return jsonify({"error": "ElevenLabs API key or voice ID not configured"}), 500
         
-        audio = generate(
-            text=text_response,
-            voice=gwen_voice_id,
-            model="eleven_monolingual_v1"
-        )
+        try:
+            audio = generate(
+                text=text_response,
+                voice=gwen_voice_id,
+                model="eleven_monolingual_v1"
+            )
+        except Exception as e:
+            return jsonify({"error": f"ElevenLabs audio generation failed: {str(e)}"}), 500
         
         # Save audio to a temporary file
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
@@ -398,7 +423,7 @@ def geocode_address():
 def health_check():
     return jsonify({
         "status": "healthy",
-        "openai_api_key_set": bool(openai.api_key),
+        "openai_api_key_set": bool(openai_api_key),
         "elevenlabs_api_key_set": bool(elevenlabs_api_key),
         "gwen_voice_id_set": bool(gwen_voice_id),
         "google_api_key_set": False,  # Always false now since we don't use Google API
@@ -408,7 +433,7 @@ def health_check():
 if __name__ == '__main__':
     # Print startup message
     print("Starting GWEN backend server...")
-    print(f"OpenAI API Key set: {bool(openai.api_key)}")
+    print(f"OpenAI API Key set: {bool(openai_api_key)}")
     print(f"ElevenLabs API Key set: {bool(elevenlabs_api_key)}")
     print(f"GWEN Voice ID set: {bool(gwen_voice_id)}")
     print(f"Using Apple MapKit: True")

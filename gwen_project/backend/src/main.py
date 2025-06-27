@@ -31,6 +31,10 @@ else:
 if elevenlabs_api_key:
     set_api_key(elevenlabs_api_key)
 
+# Simple rate limiter for OpenAI requests
+last_request_time = 0
+MIN_REQUEST_INTERVAL = 3  # Minimum seconds between requests
+
 # In-memory storage for time capsules, reminders, and user location
 time_capsules = []
 location_reminders = []
@@ -123,6 +127,14 @@ def gwen_response():
         if not client:
             return jsonify({"error": "OpenAI API key not configured"}), 500
         
+        # Check rate limiting
+        global last_request_time
+        current_time = time.time()
+        time_since_last = current_time - last_request_time
+        if time_since_last < MIN_REQUEST_INTERVAL:
+            wait_time = MIN_REQUEST_INTERVAL - time_since_last
+            return jsonify({"error": f"Rate limit exceeded. Please wait {wait_time:.1f} seconds before making another request."}), 429
+        
         # Get response from OpenAI using modern client
         try:
             response = client.chat.completions.create(
@@ -135,6 +147,8 @@ def gwen_response():
             )
             
             text_response = response.choices[0].message.content
+            # Update rate limiter after successful request
+            last_request_time = time.time()
             
         except openai.RateLimitError:
             return jsonify({"error": "OpenAI rate limit exceeded. Please try again later or check your billing."}), 429

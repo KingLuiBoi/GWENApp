@@ -8,6 +8,10 @@ import tempfile
 import time
 from elevenlabs import generate, save, set_api_key
 import math
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)

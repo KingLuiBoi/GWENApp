@@ -6,9 +6,14 @@ import openai
 import requests
 import tempfile
 import time
+import logging
 from elevenlabs import generate, save, set_api_key
 import math
 from dotenv import load_dotenv
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
@@ -113,15 +118,20 @@ for category in sample_places:
 
 @app.route('/gwen', methods=['POST'])
 def gwen_response():
+    temp_file = None
     try:
         data = request.json
         prompt = data.get('prompt', '')
         
         if not prompt:
+            logger.warning("Empty prompt received")
             return jsonify({"error": "No prompt provided"}), 400
         
         if not client:
+            logger.error("OpenAI API key not configured")
             return jsonify({"error": "OpenAI API key not configured"}), 500
+        
+        logger.info(f"Processing prompt: {prompt[:50]}...")
         
         # Get response from OpenAI using chat completions API
         try:
@@ -135,44 +145,50 @@ def gwen_response():
             )
             
             text_response = response.choices[0].message.content
+            logger.info(f"OpenAI response received: {text_response[:50]}...")
             
         except openai.RateLimitError:
-            # Fallback response when rate limited
+            logger.warning("OpenAI rate limit hit")
             text_response = "I'm currently experiencing high usage and can't process your request right now. Please try again in a few minutes, or check your OpenAI billing status. In the meantime, I can still help with basic tasks like setting reminders or finding places."
-            print("OpenAI rate limit hit - using fallback response")
             return jsonify({"error": "OpenAI rate limit exceeded. Please try again later or check your billing."}), 429
         except openai.QuotaExceededError:
-            # Fallback response when quota is exceeded
+            logger.error("OpenAI quota exceeded")
             text_response = "I'm sorry, but I'm currently experiencing high usage and can't process your request right now. Please try again later or check your OpenAI billing status. In the meantime, I can still help with basic tasks like setting reminders or finding places."
-            
+            return jsonify({"error": "OpenAI quota exceeded. Please add more funds to your account."}), 429
         except openai.AuthenticationError:
+            logger.error("OpenAI authentication failed")
             return jsonify({"error": "OpenAI authentication failed. Please check your API key."}), 401
         except openai.APIError as e:
-            print(f"OpenAI API Error: {e}")
+            logger.error(f"OpenAI API Error: {e}")
             return jsonify({"error": f"OpenAI API error: {str(e)}"}), 500
         except Exception as e:
-            print(f"Unexpected error in OpenAI Assistant API: {e}")
+            logger.error(f"Unexpected error in OpenAI API: {e}")
             import traceback
             traceback.print_exc()
-            return jsonify({"error": f"Assistant API error: {str(e)}"}), 500
+            return jsonify({"error": f"OpenAI API error: {str(e)}"}), 500
         
         # Generate audio from text using ElevenLabs
         if not elevenlabs_api_key or not gwen_voice_id:
+            logger.error("ElevenLabs API key or voice ID not configured")
             return jsonify({"error": "ElevenLabs API key or voice ID not configured"}), 500
         
         try:
+            logger.info("Generating audio with ElevenLabs...")
             audio = generate(
                 text=text_response,
                 voice=gwen_voice_id,
                 model="eleven_monolingual_v1"
             )
         except Exception as e:
+            logger.error(f"ElevenLabs audio generation failed: {e}")
             return jsonify({"error": f"ElevenLabs audio generation failed: {str(e)}"}), 500
         
         # Save audio to a temporary file
         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".mp3")
         save(audio, temp_file.name)
         temp_file.close()
+        
+        logger.info("Audio file created successfully")
         
         # Return the audio file and text response
         response = send_file(
@@ -181,10 +197,30 @@ def gwen_response():
             as_attachment=True,
             download_name="gwen_response.mp3"
         )
-        response.headers["X-GWEN-Response-Text"] = text_response
+        # Sanitize the text response to prevent header injection
+        sanitized_text = text_response.replace('\n', ' ').replace('\r', ' ').strip()
+        response.headers["X-GWEN-Response-Text"] = sanitized_text
+        
+        # Clean up the temporary file after sending
+        def cleanup_temp_file():
+            try:
+                if temp_file and os.path.exists(temp_file.name):
+                    os.unlink(temp_file.name)
+                    logger.info("Temporary audio file cleaned up")
+            except Exception as e:
+                logger.warning(f"Failed to cleanup temp file: {e}")
+        
+        response.call_on_close(cleanup_temp_file)
         return response
     
     except Exception as e:
+        logger.error(f"Unexpected error in gwen_response: {e}")
+        # Clean up temp file if it exists
+        if temp_file and os.path.exists(temp_file.name):
+            try:
+                os.unlink(temp_file.name)
+            except:
+                pass
         return jsonify({"error": str(e)}), 500
 
 @app.route('/timecapsule', methods=['GET', 'POST'])

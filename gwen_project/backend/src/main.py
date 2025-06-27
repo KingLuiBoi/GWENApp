@@ -35,6 +35,10 @@ if elevenlabs_api_key:
 last_request_time = 0
 MIN_REQUEST_INTERVAL = 3  # Minimum seconds between requests
 
+# Assistant API variables
+gwen_assistant_id = None
+user_thread_id = None
+
 # In-memory storage for time capsules, reminders, and user location
 time_capsules = []
 location_reminders = []
@@ -115,6 +119,41 @@ for category in sample_places:
                 ]
             }
 
+def create_gwen_assistant():
+    """Create the GWEN assistant using OpenAI's Assistant API"""
+    global gwen_assistant_id
+    
+    if not client:
+        print("OpenAI client not available, skipping assistant creation")
+        return
+    
+    try:
+        # Check if we already have an assistant
+        if gwen_assistant_id:
+            try:
+                # Verify the assistant still exists
+                client.beta.assistants.retrieve(gwen_assistant_id)
+                print(f"Using existing GWEN assistant: {gwen_assistant_id}")
+                return
+            except:
+                # Assistant doesn't exist, create a new one
+                gwen_assistant_id = None
+        
+        # Create new assistant
+        assistant = client.beta.assistants.create(
+            name="GWEN",
+            instructions="You are GWEN, a helpful AI assistant similar to Jarvis from Iron Man. You are concise, helpful, and slightly witty. You assist with day-to-day tasks, answer questions, and provide useful information. Keep responses under 150 words.",
+            model="gpt-4o-mini",
+            tools=[]  # No tools for now, can add later
+        )
+        
+        gwen_assistant_id = assistant.id
+        print(f"Created new GWEN assistant: {gwen_assistant_id}")
+        
+    except Exception as e:
+        print(f"Error creating GWEN assistant: {e}")
+        gwen_assistant_id = None
+
 @app.route('/gwen', methods=['POST'])
 def gwen_response():
     try:
@@ -135,18 +174,53 @@ def gwen_response():
             wait_time = MIN_REQUEST_INTERVAL - time_since_last
             return jsonify({"error": f"Rate limit exceeded. Please wait {wait_time:.1f} seconds before making another request."}), 429
         
-        # Get response from OpenAI using modern client
+        # Ensure we have an assistant
+        if not gwen_assistant_id:
+            create_gwen_assistant()
+            if not gwen_assistant_id:
+                return jsonify({"error": "Failed to create GWEN assistant"}), 500
+        
+        # Get response from OpenAI using Assistant API
         try:
-            response = client.chat.completions.create(
-                model="gpt-4o-mini",
-                messages=[
-                    {"role": "system", "content": "You are GWEN, a helpful AI assistant similar to Jarvis from Iron Man. You are concise, helpful, and slightly witty. You assist with day-to-day tasks, answer questions, and provide useful information."},
-                    {"role": "user", "content": prompt}
-                ],
-                max_tokens=150  # Limit tokens to reduce costs
+            global user_thread_id
+            
+            # Create thread if it doesn't exist
+            if not user_thread_id:
+                thread = client.beta.threads.create()
+                user_thread_id = thread.id
+                print(f"Created new thread: {user_thread_id}")
+            
+            # Add message to thread
+            message = client.beta.threads.messages.create(
+                thread_id=user_thread_id,
+                role="user",
+                content=prompt
             )
             
-            text_response = response.choices[0].message.content
+            # Run the assistant
+            run = client.beta.threads.runs.create(
+                thread_id=user_thread_id,
+                assistant_id=gwen_assistant_id
+            )
+            
+            # Wait for the run to complete
+            while True:
+                run_status = client.beta.threads.runs.retrieve(
+                    thread_id=user_thread_id,
+                    run_id=run.id
+                )
+                
+                if run_status.status == "completed":
+                    break
+                elif run_status.status in ["failed", "cancelled", "expired"]:
+                    return jsonify({"error": f"Assistant run {run_status.status}"}), 500
+                
+                time.sleep(0.5)  # Wait before checking again
+            
+            # Get the response
+            messages = client.beta.threads.messages.list(thread_id=user_thread_id)
+            text_response = messages.data[0].content[0].text.value
+            
             # Update rate limiter after successful request
             last_request_time = time.time()
             
@@ -441,7 +515,8 @@ def health_check():
         "elevenlabs_api_key_set": bool(elevenlabs_api_key),
         "gwen_voice_id_set": bool(gwen_voice_id),
         "google_api_key_set": False,  # Always false now since we don't use Google API
-        "using_apple_mapkit": True    # Indicate we're using Apple MapKit
+        "using_apple_mapkit": True,    # Indicate we're using Apple MapKit
+        "assistant_status": "active" if gwen_assistant_id else "inactive"
     }), 200
 
 if __name__ == '__main__':
@@ -451,6 +526,9 @@ if __name__ == '__main__':
     print(f"ElevenLabs API Key set: {bool(elevenlabs_api_key)}")
     print(f"GWEN Voice ID set: {bool(gwen_voice_id)}")
     print(f"Using Apple MapKit: True")
+    
+    # Create GWEN assistant
+    create_gwen_assistant()
     
     # Run the Flask app
     app.run(host='0.0.0.0', port=5050, debug=True)

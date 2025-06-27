@@ -611,6 +611,11 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "GWEN needs microphone access for voice commands and speech recognition.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "GWEN needs speech recognition to understand your voice commands and \"Hey GWEN\" wake word.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "GWEN needs location access for location-based reminders and finding nearby places.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "GWEN needs location access for location-based reminders and finding nearby places.";
+				INFOPLIST_KEY_UIBackgroundModes = "location";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -638,6 +643,11 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "GWEN needs microphone access for voice commands and speech recognition.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "GWEN needs speech recognition to understand your voice commands and \"Hey GWEN\" wake word.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "GWEN needs location access for location-based reminders and finding nearby places.";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "GWEN needs location access for location-based reminders and finding nearby places.";
+				INFOPLIST_KEY_UIBackgroundModes = "location";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

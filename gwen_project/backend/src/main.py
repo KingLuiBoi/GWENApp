@@ -31,10 +31,6 @@ else:
 if elevenlabs_api_key:
     set_api_key(elevenlabs_api_key)
 
-# Simple rate limiter for OpenAI requests
-last_request_time = 0
-MIN_REQUEST_INTERVAL = 10  # Minimum seconds between requests (increased from 3)
-
 # In-memory storage for time capsules, reminders, and user location
 time_capsules = []
 location_reminders = []
@@ -127,18 +123,10 @@ def gwen_response():
         if not client:
             return jsonify({"error": "OpenAI API key not configured"}), 500
         
-        # Check rate limiting
-        global last_request_time
-        current_time = time.time()
-        time_since_last = current_time - last_request_time
-        if time_since_last < MIN_REQUEST_INTERVAL:
-            wait_time = MIN_REQUEST_INTERVAL - time_since_last
-            return jsonify({"error": f"Rate limit exceeded. Please wait {wait_time:.1f} seconds before making another request."}), 429
-        
         # Get response from OpenAI using chat completions API
         try:
             response = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": "You are GWEN, a helpful AI assistant similar to Jarvis from Iron Man. You are concise, helpful, and slightly witty. You assist with day-to-day tasks, answer questions, and provide useful information. Keep responses under 150 words."},
                     {"role": "user", "content": prompt}
@@ -147,10 +135,11 @@ def gwen_response():
             )
             
             text_response = response.choices[0].message.content
-            # Update rate limiter after successful request
-            last_request_time = time.time()
             
         except openai.RateLimitError:
+            # Fallback response when rate limited
+            text_response = "I'm currently experiencing high usage and can't process your request right now. Please try again in a few minutes, or check your OpenAI billing status. In the meantime, I can still help with basic tasks like setting reminders or finding places."
+            print("OpenAI rate limit hit - using fallback response")
             return jsonify({"error": "OpenAI rate limit exceeded. Please try again later or check your billing."}), 429
         except openai.QuotaExceededError:
             # Fallback response when quota is exceeded
@@ -186,13 +175,14 @@ def gwen_response():
         temp_file.close()
         
         # Return the audio file and text response
-        return send_file(
+        response = send_file(
             temp_file.name,
             mimetype="audio/mpeg",
             as_attachment=True,
-            download_name="gwen_response.mp3",
-            headers={"X-GWEN-Response-Text": text_response}
+            download_name="gwen_response.mp3"
         )
+        response.headers["X-GWEN-Response-Text"] = text_response
+        return response
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500

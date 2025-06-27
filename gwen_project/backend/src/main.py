@@ -233,7 +233,13 @@ def gwen_response():
         except openai.AuthenticationError:
             return jsonify({"error": "OpenAI authentication failed. Please check your API key."}), 401
         except openai.APIError as e:
+            print(f"OpenAI API Error: {e}")
             return jsonify({"error": f"OpenAI API error: {str(e)}"}), 500
+        except Exception as e:
+            print(f"Unexpected error in OpenAI Assistant API: {e}")
+            import traceback
+            traceback.print_exc()
+            return jsonify({"error": f"Assistant API error: {str(e)}"}), 500
         
         # Generate audio from text using ElevenLabs
         if not elevenlabs_api_key or not gwen_voice_id:

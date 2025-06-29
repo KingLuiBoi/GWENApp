@@ -41,7 +41,7 @@ struct WatchContentView: View {
 // MARK: - WatchOS Views
 
 struct WatchGwenChatView: View {
-    @StateObject private var viewModel = GwenChatViewModel()
+    @StateObject private var viewModel = WatchGwenChatViewModel()
     // Assuming VoiceInputService and AudioPlaybackService are available and functional on watchOS.
     // AudioPlaybackService might need specific handling for watch output.
 
@@ -55,36 +55,23 @@ struct WatchGwenChatView: View {
                 .frame(height: 30) // Fixed height to prevent layout shifts
 
             // Conversation History (simplified)
-            ScrollViewReader { scrollViewProxy in
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 6) {
-                        ForEach(viewModel.conversation.suffix(3)) { interaction in // Show last 3 interactions
-                            VStack(alignment: .leading) {
-                                Text("You: \(interaction.userPrompt)")
-                                    .font(.footnote)
-                                    .foregroundColor(.blue)
-                                if let gwenTranscript = interaction.gwenTranscript {
-                                    Text("GWEN: \(gwenTranscript)")
-                                        .font(.footnote)
-                                } else if interaction.audioData != nil {
-                                    Text("GWEN: (Responded with audio)")
-                                        .font(.footnote)
-                                        .italic()
-                                }
-                            }
-                            .id(interaction.id)
-                            Divider()
-                        }
+            VStack(alignment: .leading, spacing: 6) {
+                if let userPrompt = viewModel.lastUserPrompt {
+                    VStack(alignment: .leading) {
+                        Text("You: \(userPrompt)")
+                            .font(.footnote)
+                            .foregroundColor(.blue)
                     }
+                    Divider()
                 }
-                .onChange(of: viewModel.conversation) { _ in
-                    if let lastInteraction = viewModel.conversation.last {
-                        withAnimation {
-                            scrollViewProxy.scrollTo(lastInteraction.id, anchor: .bottom)
-                        }
+                
+                if let gwenResponse = viewModel.lastGwenResponse {
+                    VStack(alignment: .leading) {
+                        Text("GWEN: \(gwenResponse)")
+                            .font(.footnote)
                     }
+                    Divider()
                 }
-
             }
             .frame(minHeight: 50) // Ensure it takes some space
 
@@ -116,21 +103,20 @@ struct WatchGwenChatView: View {
         .padding(.vertical, 5)
         .onAppear {
             viewModel.requestVoicePermissions()
-            viewModel.startHeyGwenIfNeeded()
         }
         // .navigationTitle("GWEN") // Usually not shown in page-based TabView items
     }
 
     private var statusText: String {
         if viewModel.isActivelyListening && !viewModel.isListeningForHeyGwen {
-            return viewModel.currentInput.isEmpty ? "Listening..." : viewModel.currentInput
+            return viewModel.currentInputText.isEmpty ? "Listening..." : viewModel.currentInputText
         } else if viewModel.isListeningForHeyGwen {
             return "Say \"Hey GWEN\""
         } else if viewModel.isThinking {
             return "GWEN is thinking..."
         } else if let error = viewModel.errorMessage {
             return error
-        } else if let lastResponse = viewModel.conversation.last?.gwenTranscript {
+        } else if let lastResponse = viewModel.lastGwenResponse {
             return lastResponse
         }
         return "Tap mic to start"

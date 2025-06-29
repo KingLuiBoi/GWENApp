@@ -22,7 +22,7 @@ class MockVoiceInputService: VoiceInputServiceProtocol {
         $wakeWordDetected.eraseToAnyPublisher()
     }
 
-    // You don’t need this if your protocol doesn’t require it, but some versions of your code had it.
+    // You don't need this if your protocol doesn't require it, but some versions of your code had it.
     var isListeningForWakeWordPublisher: AnyPublisher<Bool, Never> {
         $isListeningForWakeWord.eraseToAnyPublisher()
     }

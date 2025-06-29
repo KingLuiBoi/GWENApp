@@ -12,6 +12,10 @@
 		A6476E4D2DFE0A610003D0E8 /* GwenInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6476E4C2DFE0A2F0003D0E8 /* GwenInteraction.swift */; };
 		A6476E4F2DFE0AC20003D0E8 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6476E4E2DFE0A750003D0E8 /* OnboardingView.swift */; };
 		A6476E512DFE0B1F0003D0E8 /* PlacesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6476E502DFE0B0B0003D0E8 /* PlacesView.swift */; };
+		A66549202E10257D00B44214 /* GWENAppWatchOS Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = A66549002E10257900B44214 /* GWENAppWatchOS Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A665492B2E1027CE00B44214 /* NetworkingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438A42DFA6CCA0081C975 /* NetworkingServiceTests.swift */; };
+		A66549322E10287A00B44214 /* GWENAppWatchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438542DFA4DD90081C975 /* GWENAppWatchOSApp.swift */; };
+		A66549332E10288300B44214 /* WatchContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438552DFA4DD90081C975 /* WatchContentView.swift */; };
 		A6A4385E2DFA4DD90081C975 /* AudioPlaybackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4383F2DFA4DD90081C975 /* AudioPlaybackService.swift */; };
 		A6A4385F2DFA4DD90081C975 /* GwenChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4384F2DFA4DD90081C975 /* GwenChatView.swift */; };
 		A6A438602DFA4DD90081C975 /* GwenChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438452DFA4DD90081C975 /* GwenChatViewModel.swift */; };
@@ -19,12 +23,10 @@
 		A6A438622DFA4DD90081C975 /* WatchRemindersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4384B2DFA4DD90081C975 /* WatchRemindersViewModel.swift */; };
 		A6A438632DFA4DD90081C975 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438402DFA4DD90081C975 /* LocationService.swift */; };
 		A6A438662DFA4DD90081C975 /* MapKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438412DFA4DD90081C975 /* MapKitService.swift */; };
-		A6A438672DFA4DD90081C975 /* WatchContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438552DFA4DD90081C975 /* WatchContentView.swift */; };
 		A6A438682DFA4DD90081C975 /* PlacesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438462DFA4DD90081C975 /* PlacesViewModel.swift */; };
 		A6A438692DFA4DD90081C975 /* WatchTimeCapsuleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4384C2DFA4DD90081C975 /* WatchTimeCapsuleViewModel.swift */; };
 		A6A4386A2DFA4DD90081C975 /* RemindersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438472DFA4DD90081C975 /* RemindersViewModel.swift */; };
 		A6A4386C2DFA4DD90081C975 /* VoiceInputService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438432DFA4DD90081C975 /* VoiceInputService.swift */; };
-		A6A4386F2DFA4DD90081C975 /* GWENAppWatchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438542DFA4DD90081C975 /* GWENAppWatchOSApp.swift */; };
 		A6A438702DFA4DD90081C975 /* RemindersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438512DFA4DD90081C975 /* RemindersListView.swift */; };
 		A6A438712DFA4DD90081C975 /* NetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438422DFA4DD90081C975 /* NetworkingService.swift */; };
 		A6A438722DFA4DD90081C975 /* WatchGwenChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438492DFA4DD90081C975 /* WatchGwenChatViewModel.swift */; };
@@ -52,6 +54,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A665490D2E10257D00B44214 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A6A4380B2DFA466D0081C975 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A66548FF2E10257900B44214;
+			remoteInfo = "GWENAppWatchOS Watch App";
+		};
+		A66549172E10257D00B44214 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A6A4380B2DFA466D0081C975 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A66548FF2E10257900B44214;
+			remoteInfo = "GWENAppWatchOS Watch App";
+		};
+		A665491E2E10257D00B44214 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A6A4380B2DFA466D0081C975 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A66548FF2E10257900B44214;
+			remoteInfo = "GWENAppWatchOS Watch App";
+		};
 		A6A438212DFA46710081C975 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A6A4380B2DFA466D0081C975 /* Project object */;
@@ -68,12 +91,29 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		A66549242E10257D00B44214 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				A66549202E10257D00B44214 /* GWENAppWatchOS Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		A6476E482DFE09FB0003D0E8 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		A6476E4A2DFE0A1A0003D0E8 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		A6476E4C2DFE0A2F0003D0E8 /* GwenInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GwenInteraction.swift; sourceTree = "<group>"; };
 		A6476E4E2DFE0A750003D0E8 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		A6476E502DFE0B0B0003D0E8 /* PlacesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesView.swift; sourceTree = "<group>"; };
+		A66549002E10257900B44214 /* GWENAppWatchOS Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GWENAppWatchOS Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A665490C2E10257D00B44214 /* GWENAppWatchOS Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "GWENAppWatchOS Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A66549162E10257D00B44214 /* GWENAppWatchOS Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "GWENAppWatchOS Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6A438132DFA466D0081C975 /* GWENApplicationXCODE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GWENApplicationXCODE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6A438202DFA46710081C975 /* GWENApplicationXCODETests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GWENApplicationXCODETests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6A4382A2DFA46710081C975 /* GWENApplicationXCODEUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GWENApplicationXCODEUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -122,9 +162,45 @@
 			path = Managers;
 			sourceTree = "<group>";
 		};
+		A66549012E10257900B44214 /* GWENAppWatchOS Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "GWENAppWatchOS Watch App";
+			sourceTree = "<group>";
+		};
+		A665490F2E10257D00B44214 /* GWENAppWatchOS Watch AppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "GWENAppWatchOS Watch AppTests";
+			sourceTree = "<group>";
+		};
+		A66549192E10257D00B44214 /* GWENAppWatchOS Watch AppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "GWENAppWatchOS Watch AppUITests";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		A66548FD2E10257900B44214 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A66549092E10257D00B44214 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A66549132E10257D00B44214 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A6A438102DFA466D0081C975 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -153,6 +229,9 @@
 			isa = PBXGroup;
 			children = (
 				A6A4385D2DFA4DD90081C975 /* GWENApp 3 */,
+				A66549012E10257900B44214 /* GWENAppWatchOS Watch App */,
+				A665490F2E10257D00B44214 /* GWENAppWatchOS Watch AppTests */,
+				A66549192E10257D00B44214 /* GWENAppWatchOS Watch AppUITests */,
 				A6A438142DFA466D0081C975 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -163,6 +242,9 @@
 				A6A438132DFA466D0081C975 /* GWENApplicationXCODE.app */,
 				A6A438202DFA46710081C975 /* GWENApplicationXCODETests.xctest */,
 				A6A4382A2DFA46710081C975 /* GWENApplicationXCODEUITests.xctest */,
+				A66549002E10257900B44214 /* GWENAppWatchOS Watch App.app */,
+				A665490C2E10257D00B44214 /* GWENAppWatchOS Watch AppTests.xctest */,
+				A66549162E10257D00B44214 /* GWENAppWatchOS Watch AppUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -268,6 +350,74 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		A66548FF2E10257900B44214 /* GWENAppWatchOS Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A66549212E10257D00B44214 /* Build configuration list for PBXNativeTarget "GWENAppWatchOS Watch App" */;
+			buildPhases = (
+				A66548FC2E10257900B44214 /* Sources */,
+				A66548FD2E10257900B44214 /* Frameworks */,
+				A66548FE2E10257900B44214 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A66549012E10257900B44214 /* GWENAppWatchOS Watch App */,
+			);
+			name = "GWENAppWatchOS Watch App";
+			packageProductDependencies = (
+			);
+			productName = "GWENAppWatchOS Watch App";
+			productReference = A66549002E10257900B44214 /* GWENAppWatchOS Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		A665490B2E10257D00B44214 /* GWENAppWatchOS Watch AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A66549252E10257D00B44214 /* Build configuration list for PBXNativeTarget "GWENAppWatchOS Watch AppTests" */;
+			buildPhases = (
+				A66549082E10257D00B44214 /* Sources */,
+				A66549092E10257D00B44214 /* Frameworks */,
+				A665490A2E10257D00B44214 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A665490E2E10257D00B44214 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A665490F2E10257D00B44214 /* GWENAppWatchOS Watch AppTests */,
+			);
+			name = "GWENAppWatchOS Watch AppTests";
+			packageProductDependencies = (
+			);
+			productName = "GWENAppWatchOS Watch AppTests";
+			productReference = A665490C2E10257D00B44214 /* GWENAppWatchOS Watch AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		A66549152E10257D00B44214 /* GWENAppWatchOS Watch AppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A66549282E10257D00B44214 /* Build configuration list for PBXNativeTarget "GWENAppWatchOS Watch AppUITests" */;
+			buildPhases = (
+				A66549122E10257D00B44214 /* Sources */,
+				A66549132E10257D00B44214 /* Frameworks */,
+				A66549142E10257D00B44214 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A66549182E10257D00B44214 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A66549192E10257D00B44214 /* GWENAppWatchOS Watch AppUITests */,
+			);
+			name = "GWENAppWatchOS Watch AppUITests";
+			packageProductDependencies = (
+			);
+			productName = "GWENAppWatchOS Watch AppUITests";
+			productReference = A66549162E10257D00B44214 /* GWENAppWatchOS Watch AppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		A6A438122DFA466D0081C975 /* GWENApplicationXCODE */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = A6A438342DFA46710081C975 /* Build configuration list for PBXNativeTarget "GWENApplicationXCODE" */;
@@ -275,10 +425,12 @@
 				A6A4380F2DFA466D0081C975 /* Sources */,
 				A6A438102DFA466D0081C975 /* Frameworks */,
 				A6A438112DFA466D0081C975 /* Resources */,
+				A66549242E10257D00B44214 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A665491F2E10257D00B44214 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				A6476E642DFE41FF0003D0E8 /* Managers */,
@@ -340,6 +492,17 @@
 				LastSwiftUpdateCheck = 1630;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
+					A66548FF2E10257900B44214 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					A665490B2E10257D00B44214 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = A66548FF2E10257900B44214;
+					};
+					A66549152E10257D00B44214 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = A66548FF2E10257900B44214;
+					};
 					A6A438122DFA466D0081C975 = {
 						CreatedOnToolsVersion = 16.3;
 					};
@@ -370,11 +533,35 @@
 				A6A438122DFA466D0081C975 /* GWENApplicationXCODE */,
 				A6A4381F2DFA46710081C975 /* GWENApplicationXCODETests */,
 				A6A438292DFA46710081C975 /* GWENApplicationXCODEUITests */,
+				A66548FF2E10257900B44214 /* GWENAppWatchOS Watch App */,
+				A665490B2E10257D00B44214 /* GWENAppWatchOS Watch AppTests */,
+				A66549152E10257D00B44214 /* GWENAppWatchOS Watch AppUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		A66548FE2E10257900B44214 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A665490A2E10257D00B44214 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A66549142E10257D00B44214 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A6A438112DFA466D0081C975 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -399,6 +586,30 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		A66548FC2E10257900B44214 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A66549332E10288300B44214 /* WatchContentView.swift in Sources */,
+				A66549322E10287A00B44214 /* GWENAppWatchOSApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A66549082E10257D00B44214 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A665492B2E1027CE00B44214 /* NetworkingServiceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A66549122E10257D00B44214 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A6A4380F2DFA466D0081C975 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -416,7 +627,6 @@
 				A6A438632DFA4DD90081C975 /* LocationService.swift in Sources */,
 				A6A4388D2DFA5B0E0081C975 /* NetworkError.swift in Sources */,
 				A6A438662DFA4DD90081C975 /* MapKitService.swift in Sources */,
-				A6A438672DFA4DD90081C975 /* WatchContentView.swift in Sources */,
 				A6A438682DFA4DD90081C975 /* PlacesViewModel.swift in Sources */,
 				A6A438692DFA4DD90081C975 /* WatchTimeCapsuleViewModel.swift in Sources */,
 				A6A438952DFA5D3B0081C975 /* MapKitServiceProtocol.swift in Sources */,
@@ -425,7 +635,6 @@
 				A6A4389D2DFA6C2C0081C975 /* MockLocationService.swift in Sources */,
 				A6A4386C2DFA4DD90081C975 /* VoiceInputService.swift in Sources */,
 				A6A438B12DFA6F230081C975 /* AddTimeCapsuleView.swift in Sources */,
-				A6A4386F2DFA4DD90081C975 /* GWENAppWatchOSApp.swift in Sources */,
 				A6A438702DFA4DD90081C975 /* RemindersListView.swift in Sources */,
 				A6A438712DFA4DD90081C975 /* NetworkingService.swift in Sources */,
 				A6A438722DFA4DD90081C975 /* WatchGwenChatViewModel.swift in Sources */,
@@ -465,6 +674,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		A665490E2E10257D00B44214 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A66548FF2E10257900B44214 /* GWENAppWatchOS Watch App */;
+			targetProxy = A665490D2E10257D00B44214 /* PBXContainerItemProxy */;
+		};
+		A66549182E10257D00B44214 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A66548FF2E10257900B44214 /* GWENAppWatchOS Watch App */;
+			targetProxy = A66549172E10257D00B44214 /* PBXContainerItemProxy */;
+		};
+		A665491F2E10257D00B44214 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A66548FF2E10257900B44214 /* GWENAppWatchOS Watch App */;
+			targetProxy = A665491E2E10257D00B44214 /* PBXContainerItemProxy */;
+		};
 		A6A438222DFA46710081C975 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A6A438122DFA466D0081C975 /* GWENApplicationXCODE */;
@@ -478,6 +702,136 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		A66549222E10257D00B44214 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = GWENAppWatchOS;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = LUI.GWENApplicationXCODE;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = LUI.GWENApplicationXCODE.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.4;
+			};
+			name = Debug;
+		};
+		A66549232E10257D00B44214 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = GWENAppWatchOS;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = LUI.GWENApplicationXCODE;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = LUI.GWENApplicationXCODE.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.4;
+			};
+			name = Release;
+		};
+		A66549262E10257D00B44214 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "LUI.GWENAppWatchOS-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GWENAppWatchOS Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GWENAppWatchOS Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.4;
+			};
+			name = Debug;
+		};
+		A66549272E10257D00B44214 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "LUI.GWENAppWatchOS-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/GWENAppWatchOS Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/GWENAppWatchOS Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.4;
+			};
+			name = Release;
+		};
+		A66549292E10257D00B44214 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "LUI.GWENAppWatchOS-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "GWENAppWatchOS Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.4;
+			};
+			name = Debug;
+		};
+		A665492A2E10257D00B44214 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "LUI.GWENAppWatchOS-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "GWENAppWatchOS Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 11.4;
+			};
+			name = Release;
+		};
 		A6A438322DFA46710081C975 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -606,16 +960,17 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = GWEN;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "GWEN needs location access for location-based reminders and finding nearby places.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "GWEN needs location access for location-based reminders and finding nearby places.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "GWEN needs microphone access for voice commands and speech recognition.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "GWEN needs speech recognition to understand your voice commands and \"Hey GWEN\" wake word.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UIBackgroundModes = location;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "GWEN needs microphone access for voice commands and speech recognition.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "GWEN needs speech recognition to understand your voice commands and \"Hey GWEN\" wake word.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "GWEN needs location access for location-based reminders and finding nearby places.";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "GWEN needs location access for location-based reminders and finding nearby places.";
-				INFOPLIST_KEY_UIBackgroundModes = "location";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -638,16 +993,17 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = GWEN;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "GWEN needs location access for location-based reminders and finding nearby places.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "GWEN needs location access for location-based reminders and finding nearby places.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "GWEN needs microphone access for voice commands and speech recognition.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "GWEN needs speech recognition to understand your voice commands and \"Hey GWEN\" wake word.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UIBackgroundModes = location;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "GWEN needs microphone access for voice commands and speech recognition.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "GWEN needs speech recognition to understand your voice commands and \"Hey GWEN\" wake word.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "GWEN needs location access for location-based reminders and finding nearby places.";
-				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "GWEN needs location access for location-based reminders and finding nearby places.";
-				INFOPLIST_KEY_UIBackgroundModes = "location";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -732,6 +1088,33 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		A66549212E10257D00B44214 /* Build configuration list for PBXNativeTarget "GWENAppWatchOS Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A66549222E10257D00B44214 /* Debug */,
+				A66549232E10257D00B44214 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A66549252E10257D00B44214 /* Build configuration list for PBXNativeTarget "GWENAppWatchOS Watch AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A66549262E10257D00B44214 /* Debug */,
+				A66549272E10257D00B44214 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A66549282E10257D00B44214 /* Build configuration list for PBXNativeTarget "GWENAppWatchOS Watch AppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A66549292E10257D00B44214 /* Debug */,
+				A665492A2E10257D00B44214 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A6A4380E2DFA466D0081C975 /* Build configuration list for PBXProject "GWENApplicationXCODE" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

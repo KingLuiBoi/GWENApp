@@ -1,6 +1,5 @@
 import Foundation
 import Combine // Still needed if any part of the app uses Combine interfaces from NetworkingService, though protocol is async
-@testable import GWENApplicationXCODE // Replace GWENApp_3 with your actual app module name
 
 class MockNetworkingService: NetworkingServiceProtocol {
     // MARK: - Call Tracking

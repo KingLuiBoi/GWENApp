@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 import MapKit
-@testable import GWENApplicationXCODE // Replace GWENApp_3 with your actual app module name
 
 class MockMapKitService: MapKitServiceProtocol {
     // MARK: - Call Tracking

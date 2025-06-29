@@ -13,7 +13,7 @@ import SwiftUI
 struct GWENAppWatchOSApp: App {
     var body: some Scene {
         WindowGroup {
-            GwenChatView()
+            WatchContentView()
         }
     }
 }

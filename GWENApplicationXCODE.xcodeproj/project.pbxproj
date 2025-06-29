@@ -14,8 +14,33 @@
 		A6476E512DFE0B1F0003D0E8 /* PlacesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6476E502DFE0B0B0003D0E8 /* PlacesView.swift */; };
 		A66549202E10257D00B44214 /* GWENAppWatchOS Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = A66549002E10257900B44214 /* GWENAppWatchOS Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A665492B2E1027CE00B44214 /* NetworkingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438A42DFA6CCA0081C975 /* NetworkingServiceTests.swift */; };
-		A66549322E10287A00B44214 /* GWENAppWatchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438542DFA4DD90081C975 /* GWENAppWatchOSApp.swift */; };
-		A66549332E10288300B44214 /* WatchContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438552DFA4DD90081C975 /* WatchContentView.swift */; };
+		A669DADE2E110D430030BE37 /* GWENAppWatchOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438542DFA4DD90081C975 /* GWENAppWatchOSApp.swift */; };
+		A669DAE12E110DCA0030BE37 /* GwenInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6476E4C2DFE0A2F0003D0E8 /* GwenInteraction.swift */; };
+		A669DAE22E110DCE0030BE37 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6476E4A2DFE0A1A0003D0E8 /* AppState.swift */; };
+		A669DAE32E110DD30030BE37 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6476E482DFE09FB0003D0E8 /* AppConfig.swift */; };
+		A669DAE42E110DD70030BE37 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4388C2DFA5B000081C975 /* NetworkError.swift */; };
+		A669DAE52E110DDB0030BE37 /* DataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4383D2DFA4DD90081C975 /* DataModels.swift */; };
+		A669DAE62E110DF30030BE37 /* WatchContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438552DFA4DD90081C975 /* WatchContentView.swift */; };
+		A669DAE82E110E2B0030BE37 /* MockVoiceInputService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438A22DFA6C840081C975 /* MockVoiceInputService.swift */; };
+		A669DAE92E110E2B0030BE37 /* MockNetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438A02DFA6C5F0081C975 /* MockNetworkingService.swift */; };
+		A669DAEA2E110E2B0030BE37 /* MockMapKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4389E2DFA6C3D0081C975 /* MockMapKitService.swift */; };
+		A669DAEB2E110E2B0030BE37 /* MockLocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4389C2DFA6C150081C975 /* MockLocationService.swift */; };
+		A669DAEC2E110E2B0030BE37 /* MockAudioPlaybackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4389A2DFA6BEB0081C975 /* MockAudioPlaybackService.swift */; };
+		A669DAED2E110E2B0030BE37 /* VoiceInputServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438982DFA6BB30081C975 /* VoiceInputServiceProtocol.swift */; };
+		A669DAEE2E110E2B0030BE37 /* NetworkingServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438962DFA6B6C0081C975 /* NetworkingServiceProtocol.swift */; };
+		A669DAEF2E110E2B0030BE37 /* MapKitServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438942DFA5D050081C975 /* MapKitServiceProtocol.swift */; };
+		A669DAF02E110E2B0030BE37 /* LocationServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438922DFA5CB70081C975 /* LocationServiceProtocol.swift */; };
+		A669DAF12E110E2B0030BE37 /* AudioPlaybackServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438902DFA5BCE0081C975 /* AudioPlaybackServiceProtocol.swift */; };
+		A669DAF22E110E2B0030BE37 /* AudioPlaybackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4383F2DFA4DD90081C975 /* AudioPlaybackService.swift */; };
+		A669DAF32E110E2B0030BE37 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438402DFA4DD90081C975 /* LocationService.swift */; };
+		A669DAF42E110E2B0030BE37 /* MapKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438412DFA4DD90081C975 /* MapKitService.swift */; };
+		A669DAF52E110E2B0030BE37 /* NetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438422DFA4DD90081C975 /* NetworkingService.swift */; };
+		A669DAF62E110E2B0030BE37 /* VoiceInputService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438432DFA4DD90081C975 /* VoiceInputService.swift */; };
+		A669DAF72E110E390030BE37 /* NetworkingServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438A42DFA6CCA0081C975 /* NetworkingServiceTests.swift */; };
+		A669DAF82E110E5F0030BE37 /* WatchGwenChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438492DFA4DD90081C975 /* WatchGwenChatViewModel.swift */; };
+		A669DAF92E110E5F0030BE37 /* WatchPlacesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4384A2DFA4DD90081C975 /* WatchPlacesViewModel.swift */; };
+		A669DAFA2E110E5F0030BE37 /* WatchRemindersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4384B2DFA4DD90081C975 /* WatchRemindersViewModel.swift */; };
+		A669DAFB2E110E5F0030BE37 /* WatchTimeCapsuleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4384C2DFA4DD90081C975 /* WatchTimeCapsuleViewModel.swift */; };
 		A6A4385E2DFA4DD90081C975 /* AudioPlaybackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4383F2DFA4DD90081C975 /* AudioPlaybackService.swift */; };
 		A6A4385F2DFA4DD90081C975 /* GwenChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A4384F2DFA4DD90081C975 /* GwenChatView.swift */; };
 		A6A438602DFA4DD90081C975 /* GwenChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A438452DFA4DD90081C975 /* GwenChatViewModel.swift */; };
@@ -590,8 +615,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A66549332E10288300B44214 /* WatchContentView.swift in Sources */,
-				A66549322E10287A00B44214 /* GWENAppWatchOSApp.swift in Sources */,
+				A669DAF82E110E5F0030BE37 /* WatchGwenChatViewModel.swift in Sources */,
+				A669DAF92E110E5F0030BE37 /* WatchPlacesViewModel.swift in Sources */,
+				A669DAFA2E110E5F0030BE37 /* WatchRemindersViewModel.swift in Sources */,
+				A669DAFB2E110E5F0030BE37 /* WatchTimeCapsuleViewModel.swift in Sources */,
+				A669DAF72E110E390030BE37 /* NetworkingServiceTests.swift in Sources */,
+				A669DAE82E110E2B0030BE37 /* MockVoiceInputService.swift in Sources */,
+				A669DAE92E110E2B0030BE37 /* MockNetworkingService.swift in Sources */,
+				A669DAEA2E110E2B0030BE37 /* MockMapKitService.swift in Sources */,
+				A669DAEB2E110E2B0030BE37 /* MockLocationService.swift in Sources */,
+				A669DAEC2E110E2B0030BE37 /* MockAudioPlaybackService.swift in Sources */,
+				A669DAED2E110E2B0030BE37 /* VoiceInputServiceProtocol.swift in Sources */,
+				A669DAEE2E110E2B0030BE37 /* NetworkingServiceProtocol.swift in Sources */,
+				A669DAEF2E110E2B0030BE37 /* MapKitServiceProtocol.swift in Sources */,
+				A669DAF02E110E2B0030BE37 /* LocationServiceProtocol.swift in Sources */,
+				A669DAF12E110E2B0030BE37 /* AudioPlaybackServiceProtocol.swift in Sources */,
+				A669DAF22E110E2B0030BE37 /* AudioPlaybackService.swift in Sources */,
+				A669DAF32E110E2B0030BE37 /* LocationService.swift in Sources */,
+				A669DAF42E110E2B0030BE37 /* MapKitService.swift in Sources */,
+				A669DAF52E110E2B0030BE37 /* NetworkingService.swift in Sources */,
+				A669DAF62E110E2B0030BE37 /* VoiceInputService.swift in Sources */,
+				A669DAE62E110DF30030BE37 /* WatchContentView.swift in Sources */,
+				A669DAE52E110DDB0030BE37 /* DataModels.swift in Sources */,
+				A669DAE42E110DD70030BE37 /* NetworkError.swift in Sources */,
+				A669DAE32E110DD30030BE37 /* AppConfig.swift in Sources */,
+				A669DAE22E110DCE0030BE37 /* AppState.swift in Sources */,
+				A669DAE12E110DCA0030BE37 /* GwenInteraction.swift in Sources */,
+				A669DADE2E110D430030BE37 /* GWENAppWatchOSApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
